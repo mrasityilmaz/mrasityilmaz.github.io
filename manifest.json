@@ -1,7 +1,7 @@
 {
     "name": "devrasityilmaz.com",
     "short_name": "devrasityilmaz",
-    "start_url": "aboutme",
+    "start_url": "",
     "display": "standalone",
     "background_color": "#0E1318",
     "theme_color": "#0E1318",
