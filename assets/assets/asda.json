@@ -1,0 +1,293 @@
+{
+	"name": "system_status",
+	"latest": {
+		"version": "1.0.7",
+		"pubspec": {
+			"name": "system_status",
+			"description": "The system_status Plugin is a powerful and user-friendly tool designed to provide real-time statistics on RAM, battery, storage, and CPU usage for MacOS computers.",
+			"repository": "https://github.com/mrasityilmaz/system_status_plugin/tree/main/system_status",
+			"version": "1.0.7",
+			"homepage": "https://github.com/mrasityilmaz/system_status_plugin",
+			"environment": {
+				"sdk": ">=3.4.3 <4.0.0",
+				"flutter": ">=3.22.2"
+			},
+			"dependencies": {
+				"flutter": {
+					"sdk": "flutter"
+				},
+				"system_status_macos": "^1.0.2",
+				"system_status_platform_interface": "^1.0.2"
+			},
+			"dev_dependencies": {
+				"flutter_test": {
+					"sdk": "flutter"
+				},
+				"plugin_platform_interface": "^2.0.0",
+				"very_good_analysis": "^6.0.0"
+			},
+			"flutter": {
+				"plugin": {
+					"platforms": {
+						"macos": {
+							"default_package": "system_status_macos"
+						}
+					}
+				}
+			}
+		},
+		"archive_url": "https://pub.dev/api/archives/system_status-1.0.7.tar.gz",
+		"archive_sha256": "7ffeb20fc306d3ab1913defefd11cfd7133b0f1b409ad1ee04206fc567c69e99",
+		"published": "2024-07-02T08:24:05.677329Z"
+	},
+	"versions": [
+		{
+			"version": "1.0.0",
+			"pubspec": {
+				"name": "system_status",
+				"description": "The system_status Plugin is a powerful and user-friendly tool designed to provide real-time statistics on RAM, battery, storage, and CPU usage for MacOS computers.",
+				"repository": "https://github.com/mrasityilmaz/system_status_plugin/tree/main/system_status",
+				"version": "1.0.0",
+				"homepage": "https://github.com/mrasityilmaz/system_status_plugin",
+				"environment": {
+					"sdk": ">=3.4.3 <4.0.0",
+					"flutter": ">=3.22.2"
+				},
+				"dependencies": {
+					"flutter": {
+						"sdk": "flutter"
+					},
+					"cupertino_icons": "^1.0.8",
+					"system_status_macos": "^1.0.0",
+					"system_status_platform_interface": "^1.0.0"
+				},
+				"dev_dependencies": {
+					"flutter_test": {
+						"sdk": "flutter"
+					},
+					"flutter_lints": "^4.0.0",
+					"very_good_analysis": "^3.0.1",
+					"plugin_platform_interface": "^2.0.0",
+					"mocktail": "^1.0.4"
+				},
+				"flutter": {
+					"plugin": {
+						"platforms": {
+							"macos": {
+								"default_package": "system_status_macos"
+							}
+						}
+					}
+				}
+			},
+			"archive_url": "https://pub.dev/api/archives/system_status-1.0.0.tar.gz",
+			"archive_sha256": "2768cd5dc29767c78ff05722fab68cba469adfd83b7326a0777b6201c2cd77c5",
+			"published": "2024-06-28T14:45:17.965602Z"
+		},
+		{
+			"version": "1.0.1",
+			"pubspec": {
+				"name": "system_status",
+				"description": "The system_status Plugin is a powerful and user-friendly tool designed to provide real-time statistics on RAM, battery, storage, and CPU usage for MacOS computers.",
+				"repository": "https://github.com/mrasityilmaz/system_status_plugin/tree/main/system_status",
+				"version": "1.0.1",
+				"homepage": "https://github.com/mrasityilmaz/system_status_plugin",
+				"environment": {
+					"sdk": ">=3.4.3 <4.0.0",
+					"flutter": ">=3.22.2"
+				},
+				"dependencies": {
+					"flutter": {
+						"sdk": "flutter"
+					},
+					"cupertino_icons": "^1.0.8",
+					"system_status_macos": "^1.0.0",
+					"system_status_platform_interface": "^1.0.0"
+				},
+				"dev_dependencies": {
+					"flutter_test": {
+						"sdk": "flutter"
+					},
+					"flutter_lints": "^4.0.0",
+					"very_good_analysis": "^3.0.1",
+					"plugin_platform_interface": "^2.0.0",
+					"mocktail": "^1.0.4"
+				},
+				"flutter": {
+					"plugin": {
+						"platforms": {
+							"macos": {
+								"default_package": "system_status_macos"
+							}
+						}
+					}
+				}
+			},
+			"archive_url": "https://pub.dev/api/archives/system_status-1.0.1.tar.gz",
+			"archive_sha256": "6174f668aaa80145d5ff8e829637f04446f31ebb1550434b6bd5f05c5ec254a7",
+			"published": "2024-06-28T15:01:40.463335Z"
+		},
+		{
+			"version": "1.0.2",
+			"pubspec": {
+				"name": "system_status",
+				"description": "The system_status Plugin is a powerful and user-friendly tool designed to provide real-time statistics on RAM, battery, storage, and CPU usage for MacOS computers.",
+				"repository": "https://github.com/mrasityilmaz/system_status_plugin/tree/main/system_status",
+				"version": "1.0.2",
+				"homepage": "https://github.com/mrasityilmaz/system_status_plugin",
+				"environment": {
+					"sdk": ">=3.4.3 <4.0.0",
+					"flutter": ">=3.22.2"
+				},
+				"dependencies": {
+					"flutter": {
+						"sdk": "flutter"
+					},
+					"cupertino_icons": "^1.0.8",
+					"system_status_macos": "^1.0.0",
+					"system_status_platform_interface": "^1.0.0"
+				},
+				"dev_dependencies": {
+					"flutter_test": {
+						"sdk": "flutter"
+					},
+					"flutter_lints": "^4.0.0",
+					"very_good_analysis": "^3.0.1",
+					"plugin_platform_interface": "^2.0.0",
+					"mocktail": "^1.0.4"
+				},
+				"flutter": {
+					"plugin": {
+						"platforms": {
+							"macos": {
+								"default_package": "system_status_macos"
+							}
+						}
+					}
+				}
+			},
+			"archive_url": "https://pub.dev/api/archives/system_status-1.0.2.tar.gz",
+			"archive_sha256": "0f2544d0e3ab61077ccf9f3cb3f1e16b66e8420c1f9f5a34752f39d28d3696b6",
+			"published": "2024-06-28T16:52:27.775655Z"
+		},
+		{
+			"version": "1.0.5",
+			"pubspec": {
+				"name": "system_status",
+				"description": "The system_status Plugin is a powerful and user-friendly tool designed to provide real-time statistics on RAM, battery, storage, and CPU usage for MacOS computers.",
+				"repository": "https://github.com/mrasityilmaz/system_status_plugin/tree/main/system_status",
+				"version": "1.0.5",
+				"homepage": "https://github.com/mrasityilmaz/system_status_plugin",
+				"environment": {
+					"sdk": ">=3.4.3 <4.0.0",
+					"flutter": ">=3.22.2"
+				},
+				"dependencies": {
+					"flutter": {
+						"sdk": "flutter"
+					},
+					"system_status_macos": "^1.0.0",
+					"system_status_platform_interface": "^1.0.0"
+				},
+				"dev_dependencies": {
+					"flutter_test": {
+						"sdk": "flutter"
+					},
+					"plugin_platform_interface": "^2.0.0"
+				},
+				"flutter": {
+					"plugin": {
+						"platforms": {
+							"macos": {
+								"default_package": "system_status_macos"
+							}
+						}
+					}
+				}
+			},
+			"archive_url": "https://pub.dev/api/archives/system_status-1.0.5.tar.gz",
+			"archive_sha256": "e17fa792c829f3a896379a9f6ab871df4478a0bc5473b056bf2aaeb3a42172b9",
+			"published": "2024-07-01T21:30:58.675709Z"
+		},
+		{
+			"version": "1.0.6",
+			"pubspec": {
+				"name": "system_status",
+				"description": "The system_status Plugin is a powerful and user-friendly tool designed to provide real-time statistics on RAM, battery, storage, and CPU usage for MacOS computers.",
+				"repository": "https://github.com/mrasityilmaz/system_status_plugin/tree/main/system_status",
+				"version": "1.0.6",
+				"homepage": "https://github.com/mrasityilmaz/system_status_plugin",
+				"environment": {
+					"sdk": ">=3.4.3 <4.0.0",
+					"flutter": ">=3.22.2"
+				},
+				"dependencies": {
+					"flutter": {
+						"sdk": "flutter"
+					},
+					"system_status_macos": "^1.0.1",
+					"system_status_platform_interface": "^1.0.2"
+				},
+				"dev_dependencies": {
+					"flutter_test": {
+						"sdk": "flutter"
+					},
+					"plugin_platform_interface": "^2.0.0",
+					"very_good_analysis": "^6.0.0"
+				},
+				"flutter": {
+					"plugin": {
+						"platforms": {
+							"macos": {
+								"default_package": "system_status_macos"
+							}
+						}
+					}
+				}
+			},
+			"archive_url": "https://pub.dev/api/archives/system_status-1.0.6.tar.gz",
+			"archive_sha256": "45c00e476b4d64810ccf915225b6483b02562267c9756fb2eb5df0b399117358",
+			"published": "2024-07-02T07:47:39.415754Z"
+		},
+		{
+			"version": "1.0.7",
+			"pubspec": {
+				"name": "system_status",
+				"description": "The system_status Plugin is a powerful and user-friendly tool designed to provide real-time statistics on RAM, battery, storage, and CPU usage for MacOS computers.",
+				"repository": "https://github.com/mrasityilmaz/system_status_plugin/tree/main/system_status",
+				"version": "1.0.7",
+				"homepage": "https://github.com/mrasityilmaz/system_status_plugin",
+				"environment": {
+					"sdk": ">=3.4.3 <4.0.0",
+					"flutter": ">=3.22.2"
+				},
+				"dependencies": {
+					"flutter": {
+						"sdk": "flutter"
+					},
+					"system_status_macos": "^1.0.2",
+					"system_status_platform_interface": "^1.0.2"
+				},
+				"dev_dependencies": {
+					"flutter_test": {
+						"sdk": "flutter"
+					},
+					"plugin_platform_interface": "^2.0.0",
+					"very_good_analysis": "^6.0.0"
+				},
+				"flutter": {
+					"plugin": {
+						"platforms": {
+							"macos": {
+								"default_package": "system_status_macos"
+							}
+						}
+					}
+				}
+			},
+			"archive_url": "https://pub.dev/api/archives/system_status-1.0.7.tar.gz",
+			"archive_sha256": "7ffeb20fc306d3ab1913defefd11cfd7133b0f1b409ad1ee04206fc567c69e99",
+			"published": "2024-07-02T08:24:05.677329Z"
+		}
+	]
+}
