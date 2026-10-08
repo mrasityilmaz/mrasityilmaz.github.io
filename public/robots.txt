@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://devrasityilmaz.com/sitemap-index.xml

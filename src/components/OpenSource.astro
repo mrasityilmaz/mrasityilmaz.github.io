@@ -1,0 +1,635 @@
+---
+import { Image } from 'astro:assets';
+import { oss, caseStudies } from '../data/oss';
+import { site } from '../data/site';
+import mihrIcon from '../assets/oss/mihr-icon.png';
+import storeStudioIcon from '../assets/oss/store-studio-icon.png';
+
+const [mihr, storeStudio, assetsGen, systemStatus] = oss;
+const seeds = ['#7839ee', '#0ea5e9', '#16a34a', '#f97316', '#e11d48'];
+const shades = [5, 12, 22, 34, 48, 62, 76, 88];
+
+const arrow = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+---
+
+<section class="oss section" id="open-source" aria-labelledby="oss-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Open source & tools</p>
+      <h2 id="oss-title" data-reveal style="--d: 80ms">Things I build <span class="serif">for other developers.</span></h2>
+      <p data-reveal style="--d: 160ms">
+        A design system I use in my own apps, a Claude Code plugin for the stores, and the small tools that made my day-to-day faster.
+      </p>
+    </div>
+
+    <div class="bento">
+      {/* Mihr UI — with a live seed-color demo */}
+      <article class="card card--mihr" data-reveal data-mihr style={`--seed:${seeds[0]}`}>
+        <div class="card__top">
+          <Image src={mihrIcon} alt="" width={56} height={56} densities={[1, 2]} class="card__icon" />
+          <div>
+            <h3>{mihr.name}</h3>
+            <p class="card__kind">{mihr.kind}</p>
+          </div>
+        </div>
+        <p class="card__blurb">{mihr.blurb}</p>
+
+        <div class="mihr-demo" aria-label="Try it: pick a seed color">
+          <div class="mihr-demo__seeds" role="radiogroup" aria-label="Seed color">
+            {
+              seeds.map((c, i) => (
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={i === 0 ? 'true' : 'false'}
+                  aria-label={`Seed ${c}`}
+                  data-seed={c}
+                  style={`--c:${c}`}
+                />
+              ))
+            }
+          </div>
+          <div class="mihr-demo__scale" aria-hidden="true">
+            {shades.map((v) => <span style={`--v:${v}`} />)}
+          </div>
+          <div class="mihr-demo__ui" aria-hidden="true">
+            <span class="mihr-demo__btn">Primary</span>
+            <span class="mihr-demo__btn mihr-demo__btn--soft">Soft</span>
+            <span class="mihr-demo__chip">Badge</span>
+            <span class="mihr-demo__toggle"><i></i></span>
+          </div>
+        </div>
+
+        <ul class="card__facts">{mihr.facts.map((f) => <li>{f}</li>)}</ul>
+        <div class="card__links">
+          {mihr.links.map((l) => <a href={l.href} target="_blank" rel="noopener">{l.label}<span set:html={arrow} /></a>)}
+        </div>
+      </article>
+
+      {/* store-studio */}
+      <article class="card card--store" data-reveal style="--d: 80ms">
+        <div class="card__top">
+          <Image src={storeStudioIcon} alt="" width={56} height={56} densities={[1, 2]} class="card__icon" />
+          <div>
+            <h3>{storeStudio.name} <span class="card__new">New</span></h3>
+            <p class="card__kind">{storeStudio.kind}</p>
+          </div>
+        </div>
+        <p class="card__blurb">{storeStudio.blurb}</p>
+        <div class="term" aria-hidden="true">
+          <p><span class="term__you">you</span> Upload the new tr-TR screenshots for iPhone</p>
+          <p><span class="term__ai">claude</span> Dry run · 6 screenshots → App Store Connect · iPhone 6.9″ · tr-TR</p>
+          <p><span class="term__ok">✓</span> Confirm to publish</p>
+        </div>
+        <ul class="card__facts">{storeStudio.facts.map((f) => <li>{f}</li>)}</ul>
+        <div class="card__links">
+          {storeStudio.links.map((l) => <a href={l.href} target="_blank" rel="noopener">{l.label}<span set:html={arrow} /></a>)}
+        </div>
+      </article>
+
+      {/* Assets generator */}
+      <article class="card card--assets" data-reveal>
+        <div class="card__top card__top--plain">
+          <div>
+            <h3>{assetsGen.name}</h3>
+            <p class="card__kind">{assetsGen.kind}</p>
+          </div>
+        </div>
+        <p class="card__blurb">{assetsGen.blurb}</p>
+        <pre class="code" aria-hidden="true"><code><span class="c">// before</span>
+Image.asset(<span class="s">'assets/images/logo.png'</span>)
+<span class="c">// after</span>
+Image.asset(Assets.images.logo)</code></pre>
+        <div class="card__links">
+          {assetsGen.links.map((l) => <a href={l.href} target="_blank" rel="noopener">{l.label}<span set:html={arrow} /></a>)}
+        </div>
+      </article>
+
+      {/* system_status */}
+      <article class="card card--status" data-reveal style="--d: 80ms">
+        <div class="card__top card__top--plain">
+          <div>
+            <h3>{systemStatus.name}</h3>
+            <p class="card__kind">{systemStatus.kind}</p>
+          </div>
+        </div>
+        <p class="card__blurb">{systemStatus.blurb}</p>
+        <div class="meters" aria-hidden="true">
+          <div><span>CPU</span><i style="--p: 0.18"></i></div>
+          <div><span>Battery</span><i style="--p: 0.86"></i></div>
+          <div><span>Disk</span><i style="--p: 0.64"></i></div>
+          <div><span>Memory</span><i style="--p: 0.52"></i></div>
+        </div>
+        <ul class="card__facts">{systemStatus.facts.map((f) => <li>{f}</li>)}</ul>
+        <div class="card__links">
+          {systemStatus.links.map((l) => <a href={l.href} target="_blank" rel="noopener">{l.label}<span set:html={arrow} /></a>)}
+        </div>
+      </article>
+    </div>
+
+    <div class="cases" data-reveal>
+      <div class="cases__head">
+        <h3>Case studies</h3>
+        <p>Take-home projects built for hiring processes — the code is public, so you can read it.</p>
+      </div>
+      <ul class="cases__list">
+        {
+          caseStudies.map((c) => (
+            <li>
+              <a href={c.href} target="_blank" rel="noopener">
+                <span class="cases__year">{c.year}</span>
+                <span class="sr-only">: </span>
+                <span class="cases__name">{c.name}</span>
+                <span class="sr-only"> — </span>
+                <span class="cases__note">{c.note}</span>
+                <span class="cases__arrow" set:html={arrow} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="cases__more" href={site.social.github} target="_blank" rel="noopener">
+        Everything else on GitHub <span set:html={arrow} />
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-mihr]').forEach((card) => {
+    const radios = card.querySelectorAll<HTMLButtonElement>('[data-seed]');
+    radios.forEach((btn) =>
+      btn.addEventListener('click', () => {
+        card.style.setProperty('--seed', btn.dataset.seed!);
+        radios.forEach((r) => r.setAttribute('aria-checked', String(r === btn)));
+      }),
+    );
+  });
+</script>
+
+<style>
+  @property --seed {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #7839ee;
+  }
+
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: clamp(22px, 2.4vw, 32px);
+    border-radius: var(--r-xl);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.035), rgb(255 255 255 / 0.015));
+    box-shadow: inset 0 0 0 1px var(--line);
+    overflow: hidden;
+    transition: box-shadow 0.4s;
+  }
+
+  .card:hover {
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+
+  .card--mihr {
+    grid-column: span 7;
+    grid-row: span 2;
+    transition:
+      box-shadow 0.4s,
+      --seed 0.6s var(--ease-out);
+  }
+
+  .card--mihr::before {
+    content: '';
+    position: absolute;
+    inset: -30% -20% auto auto;
+    width: 70%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in oklch, var(--seed) 35%, transparent), transparent);
+    pointer-events: none;
+  }
+
+  .card--store {
+    grid-column: span 5;
+  }
+
+  .card--assets {
+    grid-column: span 5;
+  }
+
+  .card--status {
+    grid-column: span 12;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 40px;
+  }
+
+  .card--status .meters {
+    grid-column: 2;
+    grid-row: 1 / span 4;
+    align-self: center;
+  }
+
+  .card__top {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .card__top :global(.card__icon) {
+    width: 56px;
+    height: 56px;
+    border-radius: 15px;
+    box-shadow: 0 8px 24px -10px rgb(0 0 0 / 0.7);
+  }
+
+  .card h3 {
+    font-size: clamp(1.35rem, 1.1rem + 0.8vw, 1.75rem);
+    letter-spacing: -0.03em;
+  }
+
+  .card__kind {
+    margin-top: 3px;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .card__new {
+    display: inline-block;
+    padding: 2px 8px;
+    margin-left: 4px;
+    border-radius: 999px;
+    background: rgb(126 226 168 / 0.14);
+    color: #7ee2a8;
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  .card__blurb {
+    position: relative;
+    color: var(--text-2);
+    max-width: 56ch;
+  }
+
+  .card__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: auto 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card__facts li {
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.05);
+    color: var(--text);
+    font-size: 0.8125rem;
+  }
+
+  .card__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  .card__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text);
+    font-size: var(--fs-sm);
+    font-weight: 520;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size 0.4s var(--ease-out);
+  }
+
+  .card__links a:hover {
+    background-size: 100% 1px;
+  }
+
+  .card__links :global(svg),
+  .cases :global(svg) {
+    width: 13px;
+    height: 13px;
+  }
+
+  /* Mihr demo */
+  .mihr-demo {
+    position: relative;
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+    border-radius: var(--r-lg);
+    background: rgb(0 0 0 / 0.3);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .mihr-demo__seeds {
+    display: flex;
+    gap: 10px;
+  }
+
+  .mihr-demo__seeds button {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 3px transparent;
+    transition:
+      box-shadow 0.3s,
+      transform 0.3s var(--ease-out);
+  }
+
+  .mihr-demo__seeds button:hover {
+    transform: scale(1.1);
+  }
+
+  .mihr-demo__seeds button[aria-checked='true'] {
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 4px var(--c);
+  }
+
+  .mihr-demo__scale {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    height: 44px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .mihr-demo__scale span {
+    background: color-mix(in oklch, var(--seed), oklch(1 0 0) calc(100% - var(--v) * 1%));
+  }
+
+  .mihr-demo__scale span:nth-child(n + 5) {
+    background: color-mix(in oklch, var(--seed), oklch(0.12 0.02 280) calc((var(--v) - 50) * 1.6%));
+  }
+
+  .mihr-demo__ui {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mihr-demo__btn {
+    padding: 9px 16px;
+    border-radius: 12px;
+    background: var(--seed);
+    color: #fff;
+    font-size: var(--fs-sm);
+    font-weight: 560;
+  }
+
+  .mihr-demo__btn--soft {
+    background: color-mix(in oklch, var(--seed) 18%, transparent);
+    color: color-mix(in oklch, var(--seed), white 45%);
+  }
+
+  .mihr-demo__chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--seed) 60%, transparent);
+    color: color-mix(in oklch, var(--seed), white 35%);
+    font-size: var(--fs-xs);
+  }
+
+  .mihr-demo__toggle {
+    position: relative;
+    width: 42px;
+    height: 24px;
+    border-radius: 999px;
+    background: var(--seed);
+  }
+
+  .mihr-demo__toggle i {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  /* store-studio terminal */
+  .term {
+    display: grid;
+    gap: 8px;
+    padding: 16px;
+    border-radius: var(--r-md);
+    background: #0b0b0e;
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--text-2);
+  }
+
+  .term span {
+    display: inline-block;
+    min-width: 54px;
+    margin-right: 6px;
+  }
+
+  .term__you {
+    color: #8ab4ff;
+  }
+
+  .term__ai {
+    color: #c4a7ff;
+  }
+
+  .term__ok {
+    color: #7ee2a8;
+  }
+
+  /* code */
+  .code {
+    margin: 0;
+    padding: 16px;
+    border-radius: var(--r-md);
+    background: #0b0b0e;
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+
+  .code .c {
+    color: var(--text-3);
+  }
+
+  .code .s {
+    color: #f5b14c;
+  }
+
+  /* meters */
+  .meters {
+    display: grid;
+    gap: 14px;
+    padding: 20px;
+    border-radius: var(--r-lg);
+    background: rgb(0 0 0 / 0.3);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .meters div {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-2);
+  }
+
+  .meters i {
+    position: relative;
+    height: 8px;
+    border-radius: 99px;
+    background: rgb(255 255 255 / 0.07);
+    overflow: hidden;
+  }
+
+  .meters i::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--p) * 100%);
+    border-radius: inherit;
+    background: linear-gradient(90deg, #7ee2a8, #4fd1c5);
+  }
+
+  /* Case studies */
+  .cases {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 24px 64px;
+    margin-top: clamp(56px, 7vw, 96px);
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+  }
+
+  .cases__head h3 {
+    font-size: var(--fs-lg);
+    letter-spacing: -0.03em;
+  }
+
+  .cases__head p {
+    margin-top: 10px;
+    max-width: 36ch;
+    color: var(--text-2);
+  }
+
+  .cases__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cases__list a {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 0.8fr) minmax(0, 1.4fr) 20px;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 4px;
+    border-bottom: 1px solid var(--line);
+    transition:
+      padding 0.4s var(--ease-out),
+      background-color 0.3s;
+  }
+
+  .cases__list a:hover {
+    padding-inline: 14px 8px;
+    background: rgb(255 255 255 / 0.03);
+  }
+
+  .cases__year {
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+  }
+
+  .cases__name {
+    font-weight: 540;
+  }
+
+  .cases__note {
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+
+  .cases__arrow {
+    justify-self: end;
+    color: var(--text-3);
+  }
+
+  .cases__more {
+    grid-column: 2;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text);
+    font-weight: 520;
+  }
+
+  @media (max-width: 960px) {
+    .card--mihr,
+    .card--store,
+    .card--assets,
+    .card--status {
+      grid-column: span 12;
+      grid-row: auto;
+    }
+
+    .card--status {
+      display: flex;
+    }
+
+    .cases {
+      grid-template-columns: 1fr;
+    }
+
+    .cases__more {
+      grid-column: 1;
+    }
+
+    .cases__list a {
+      grid-template-columns: 44px minmax(0, 1fr) 20px;
+    }
+
+    .cases__note {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .cases__arrow {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+</style>

@@ -1,0 +1,62 @@
+# Builds the Astro site and publishes it to GitHub Pages (devrasityilmaz.com).
+# Requires: Settings → Pages → Source = "GitHub Actions".
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+
+  # Optional: clears Cloudflare's cache after each deploy.
+  # Enable by adding the repo variable CF_ZONE_ID and the secret CLOUDFLARE_API_TOKEN
+  # (a token limited to "Zone → Cache Purge" for devrasityilmaz.com).
+  purge-cloudflare:
+    needs: deploy
+    if: ${{ vars.CF_ZONE_ID != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Purge Cloudflare cache
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ZONE_ID: ${{ vars.CF_ZONE_ID }}
+        run: |
+          sleep 30
+          curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
+            -H "Authorization: Bearer ${CF_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'

@@ -1,0 +1,150 @@
+---
+import { Image } from 'astro:assets';
+import Phone from './Phone.astro';
+import wordmark from '../assets/sepello/wordmark-cream.png';
+import { appsById } from '../data/apps';
+
+const sepello = appsById['sepello'];
+const [home, lists] = sepello.phone.screens;
+---
+
+<section class="spot section" aria-labelledby="spot-title">
+  <div class="container">
+    <a class="spot__card" href="/sepello/" data-reveal>
+      <div class="spot__glow" aria-hidden="true"></div>
+      <div class="spot__copy">
+        <p class="eyebrow">My own product · coming soon</p>
+        <h2 id="spot-title" class="sr-only">Sepello</h2>
+        <Image src={wordmark} alt="sepello." class="spot__wordmark" widths={[320, 640]} sizes="320px" />
+        <p class="spot__tagline">Get ready for the big moments <span class="serif">together.</span></p>
+        <p class="spot__lead">
+          New home, baby, school or trousseau: share your list with the people you love. Shared lists, ready-made templates and a
+          budget that keeps itself — for iOS and Android.
+        </p>
+        <span class="btn spot__cta">
+          Explore Sepello
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </span>
+      </div>
+      <div class="spot__phones" aria-hidden="true">
+        <Phone class="spot__phone spot__phone--back">
+          <Image src={lists} alt="" widths={[260, 520]} sizes="240px" loading="lazy" />
+        </Phone>
+        <Phone class="spot__phone spot__phone--front">
+          <Image src={home} alt="" widths={[300, 600]} sizes="280px" loading="lazy" />
+        </Phone>
+      </div>
+    </a>
+  </div>
+</section>
+
+<style>
+  .spot {
+    padding-block: clamp(48px, 8vw, 120px);
+  }
+
+  .spot__card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    align-items: center;
+    gap: 40px;
+    min-height: 560px;
+    padding: clamp(32px, 5vw, 72px);
+    border-radius: 44px;
+    overflow: hidden;
+    background:
+      radial-gradient(90% 120% at 100% 0%, rgb(120 57 238 / 0.42), transparent 60%),
+      radial-gradient(70% 80% at 0% 100%, rgb(239 90 60 / 0.16), transparent 70%),
+      #120f1a;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+    isolation: isolate;
+  }
+
+  @supports (corner-shape: squircle) {
+    .spot__card {
+      border-radius: 80px;
+      corner-shape: squircle;
+    }
+  }
+
+  .spot__copy {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    justify-items: start;
+    gap: 22px;
+  }
+
+  .spot__copy :global(.spot__wordmark) {
+    width: clamp(200px, 22vw, 300px);
+    height: auto;
+  }
+
+  .spot__tagline {
+    font-size: var(--fs-xl);
+    font-weight: 560;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+  }
+
+  .spot__tagline .serif {
+    color: #ff8a6d;
+  }
+
+  .spot__lead {
+    max-width: 46ch;
+    color: var(--text-2);
+  }
+
+  .spot__cta {
+    margin-top: 6px;
+  }
+
+  .spot__card:hover .spot__cta {
+    transform: translateY(-2px);
+  }
+
+  .spot__phones {
+    position: relative;
+    height: 100%;
+    min-height: 460px;
+  }
+
+  .spot__phones :global(.spot__phone) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transition: transform 1s var(--ease-out);
+  }
+
+  .spot__phones :global(.spot__phone--front) {
+    --phone-w: 250px;
+    transform: translate(-30%, -46%) rotate(4deg);
+    z-index: 2;
+  }
+
+  .spot__phones :global(.spot__phone--back) {
+    --phone-w: 220px;
+    transform: translate(-100%, -54%) rotate(-7deg);
+    opacity: 0.85;
+  }
+
+  .spot__card:hover :global(.spot__phone--front) {
+    transform: translate(-30%, -50%) rotate(2deg);
+  }
+
+  .spot__card:hover :global(.spot__phone--back) {
+    transform: translate(-108%, -56%) rotate(-9deg);
+  }
+
+  @media (max-width: 900px) {
+    .spot__card {
+      grid-template-columns: 1fr;
+    }
+
+    .spot__phones {
+      min-height: 440px;
+    }
+  }
+</style>

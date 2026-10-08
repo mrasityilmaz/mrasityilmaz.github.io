@@ -1,0 +1,238 @@
+---
+import { Image } from 'astro:assets';
+import { galleryOf, type AppEntry } from '../data/apps';
+
+interface Props {
+  apps: AppEntry[];
+}
+
+const { apps } = Astro.props;
+const withShots = apps.filter((a) => galleryOf(a).length > 0);
+---
+
+{/* Each gallery lives in an inert <template>, so nothing loads until it is opened. */}
+{
+  withShots.map((app) => (
+    <template data-gallery-tpl={app.id} data-title={app.name}>
+      {galleryOf(app).map((img, k, all) => (
+        <figure class="lb__item">
+          <Image
+            src={img}
+            alt={`${app.name} — screenshot ${k + 1} of ${all.length}`}
+            widths={img.width > img.height ? [800, 1400] : [420, 760]}
+            sizes={img.width > img.height ? '(max-width: 900px) 92vw, 1100px' : '(max-width: 900px) 70vw, 380px'}
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      ))}
+    </template>
+  ))
+}
+
+<dialog class="lb" data-lightbox aria-labelledby="lb-title">
+  <div class="lb__bar">
+    <p id="lb-title" class="lb__title" data-lb-title></p>
+    <div class="lb__ctrl">
+      <button type="button" class="lb__btn" data-lb-prev aria-label="Previous">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <button type="button" class="lb__btn" data-lb-next aria-label="Next">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <button type="button" class="lb__btn" data-lb-close aria-label="Close">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+      </button>
+    </div>
+  </div>
+  <div class="lb__track" data-lb-track tabindex="0"></div>
+</dialog>
+
+<script>
+  import { getLenis } from '../scripts/motion';
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const track = dialog?.querySelector<HTMLElement>('[data-lb-track]');
+  const title = dialog?.querySelector<HTMLElement>('[data-lb-title]');
+
+  if (dialog && track && title) {
+    const open = (build: () => void, label: string, startIndex = 0) => {
+      track.replaceChildren();
+      build();
+      title.textContent = label;
+      getLenis()?.stop();
+      dialog.showModal();
+      requestAnimationFrame(() => {
+        const target = track.children[startIndex] as HTMLElement | undefined;
+        track.scrollTo({ left: target ? target.offsetLeft - track.offsetLeft : 0, behavior: 'instant' as ScrollBehavior });
+        track.focus({ preventScroll: true });
+      });
+    };
+
+    const close = () => dialog.close();
+
+    dialog.addEventListener('close', () => {
+      track.querySelectorAll('video').forEach((v) => v.pause());
+      track.replaceChildren();
+      getLenis()?.start();
+    });
+
+    // Click on the backdrop closes.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
+    });
+
+    const step = (dir: 1 | -1) => {
+      const first = track.firstElementChild as HTMLElement | null;
+      if (!first) return;
+      track.scrollBy({ left: dir * (first.offsetWidth + 16), behavior: 'smooth' });
+    };
+
+    dialog.querySelector('[data-lb-prev]')?.addEventListener('click', () => step(-1));
+    dialog.querySelector('[data-lb-next]')?.addEventListener('click', () => step(1));
+    dialog.querySelector('[data-lb-close]')?.addEventListener('click', close);
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') step(1);
+      if (e.key === 'ArrowLeft') step(-1);
+    });
+
+    document.addEventListener('click', (e) => {
+      const el = (e.target as HTMLElement).closest<HTMLElement>('[data-gallery-open],[data-video-open]');
+      if (!el) return;
+      e.preventDefault();
+
+      if (el.dataset.galleryOpen) {
+        const tpl = document.querySelector<HTMLTemplateElement>(`template[data-gallery-tpl="${el.dataset.galleryOpen}"]`);
+        if (!tpl) return;
+        dialog.dataset.mode = 'gallery';
+        open(() => track.append(tpl.content.cloneNode(true)), `${tpl.dataset.title} — screenshots`, Number(el.dataset.galleryIndex ?? 0));
+      } else if (el.dataset.videoOpen) {
+        dialog.dataset.mode = 'video';
+        open(() => {
+          const fig = document.createElement('figure');
+          fig.className = 'lb__item lb__item--video';
+          const v = document.createElement('video');
+          v.src = el.dataset.videoOpen!;
+          v.controls = true;
+          v.autoplay = true;
+          v.playsInline = true;
+          fig.append(v);
+          track.append(fig);
+        }, el.dataset.videoTitle ?? 'Video');
+      }
+    });
+  }
+</script>
+
+<style>
+  .lb {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  .lb::backdrop {
+    background: rgb(5 5 6 / 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .lb[open] {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    animation: lb-in 0.45s var(--ease-out);
+  }
+
+  @keyframes lb-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+  }
+
+  .lb__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px var(--gutter);
+  }
+
+  .lb__title {
+    font-weight: 560;
+    letter-spacing: -0.01em;
+  }
+
+  .lb__ctrl {
+    display: flex;
+    gap: 8px;
+  }
+
+  .lb__btn {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.08);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    transition: background-color 0.25s;
+  }
+
+  .lb__btn:hover {
+    background: rgb(255 255 255 / 0.16);
+  }
+
+  .lb__btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .lb[data-mode='video'] [data-lb-prev],
+  .lb[data-mode='video'] [data-lb-next] {
+    display: none;
+  }
+
+  .lb__track {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 8px var(--gutter) 28px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    outline: none;
+  }
+
+  .lb[data-mode='video'] .lb__track {
+    justify-content: center;
+  }
+
+  .lb__track :global(.lb__item) {
+    flex: none;
+    height: min(82dvh, 900px);
+    margin: 0;
+    scroll-snap-align: center;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+
+  .lb__track :global(.lb__item img),
+  .lb__track :global(.lb__item video) {
+    height: 100%;
+    width: auto;
+    max-width: 92vw;
+    object-fit: contain;
+  }
+</style>

@@ -1,0 +1,126 @@
+---
+const toolbox = [
+  { group: 'Core', items: ['Flutter', 'Dart', 'TypeScript', 'Swift', 'C#', 'SQL'] },
+  { group: 'Architecture', items: ['Clean Architecture', 'MVVM (Stacked)', 'Bloc', 'Provider', 'Riverpod', 'DI', 'Repository pattern'] },
+  { group: 'Interface', items: ['Figma to Flutter', 'Design systems', 'ThemeExtension', 'Custom paint', 'Motion', 'iPad & web layouts'] },
+  { group: 'Backend & AI', items: ['Firebase', 'Cloud Functions', 'REST', 'Socket.IO', 'OpenAI', 'Gemini', 'TensorFlow Lite'] },
+  { group: 'Shipping', items: ['StoreKit & Play Billing', 'RevenueCat', 'AdMob', 'OneSignal', 'GitHub Actions', 'Azure Pipelines', 'Claude Code'] },
+];
+---
+
+<section class="about section" id="about" aria-labelledby="about-title">
+  <div class="container about__grid">
+    <div class="about__copy">
+      <p class="eyebrow" data-reveal>About</p>
+      <h2 id="about-title" data-reveal style="--d: 80ms">Architecture first, <span class="serif">pixels close behind.</span></h2>
+      <p data-reveal style="--d: 140ms">
+        I’m a Flutter developer from Istanbul with a degree in software engineering. I care about the parts users never see —
+        clean layers, reusable components, tests — as much as the parts they do: pixel-accurate UI straight from Figma, and
+        motion that feels native.
+      </p>
+      <p data-reveal style="--d: 200ms">
+        Lately that means AI products: multi-provider assistants, generation pipelines, an on-device sound classifier — and the
+        subscriptions, credits and releases that keep them running. I build with Claude Code every day, and I ship to both stores
+        myself.
+      </p>
+    </div>
+
+    <dl class="about__tools" data-reveal style="--d: 120ms">
+      {
+        toolbox.map((t) => (
+          <div class="about__row">
+            <dt>{t.group}</dt>
+            <dd>
+              <ul>
+                {t.items.map((i) => (
+                  <li>{i}</li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .about {
+    border-top: 1px solid var(--line);
+  }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+
+  .about__copy {
+    display: grid;
+    gap: 22px;
+  }
+
+  .about__copy h2 {
+    font-size: var(--fs-2xl);
+  }
+
+  .about__copy p:not(.eyebrow) {
+    max-width: 58ch;
+    color: var(--text-2);
+    font-size: var(--fs-md);
+  }
+
+  .about__tools {
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .about__row {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr);
+    gap: 16px;
+    padding-block: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .about__row dt {
+    padding-top: 5px;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .about__row dd {
+    margin: 0;
+  }
+
+  .about__row ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about__row li {
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: var(--tint);
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 900px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .about__row {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+  }
+</style>

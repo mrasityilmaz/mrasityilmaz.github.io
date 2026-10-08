@@ -1,0 +1,921 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Phone from '../components/Phone.astro';
+import AppIcon from '../components/AppIcon.astro';
+import { appsById } from '../data/apps';
+import { site, mailto } from '../data/site';
+import wordmarkInk from '../assets/sepello/wordmark-ink.png';
+import wordmarkCream from '../assets/sepello/wordmark-cream.png';
+import welcome from '../assets/apps/sepello/welcome.webp';
+import portrait from '../assets/me/portrait.webp';
+
+const sepello = appsById['sepello'];
+const [home, myLists, activity, templates, profile] = sepello.phone.screens;
+
+/* Every figure on this page was checked against the repository on 2026-10-09:
+   114 merged PRs (gh pr list), 52 exported Cloud Functions (functions/src/index.ts),
+   642 tests in the latest CI run on main (214 Flutter, 162 Functions, 266 security rules),
+   160 of 163 non-merge commits co-authored with Claude, 7 ready-made templates with 220 items
+   (assets/seed/templates.json), first commit 2026-04-03. */
+const facts = [
+  { value: '110+', label: 'merged pull requests' },
+  { value: '52', label: 'Cloud Functions' },
+  { value: '600+', label: 'automated tests, run in CI' },
+  { value: '160 / 163', label: 'commits co-authored with Claude' },
+];
+
+const features = [
+  {
+    id: 'shared',
+    eyebrow: 'Shared lists',
+    title: 'One list for the whole family.',
+    body: 'Invite people with a code and choose who can only view and who can edit. Every change — an item added, something bought — shows up for everyone, live.',
+    points: ['Invite codes', 'Viewer and editor roles', 'Live updates'],
+    screen: myLists,
+    alt: 'Sepello “My lists” screen with four lists and their progress',
+  },
+  {
+    id: 'templates',
+    eyebrow: 'Ready-made lists',
+    title: 'Start from a list built for the moment.',
+    body: 'Trousseau, wedding, new home, baby, hospital bag, back to school — pick the moment and start from a ready-made list. Every item begins as an empty slot; add a product link and a price when you have chosen.',
+    points: ['7 ready-made lists', '220 items to start from', 'Link and price in every slot'],
+    screen: templates,
+    alt: 'Sepello home screen inviting you to create a first list from ready-made lists',
+  },
+  {
+    id: 'budget',
+    eyebrow: 'Budget & spending',
+    title: 'Know what’s bought, spent and left.',
+    body: 'Set a budget and a target date. Sepello keeps a running total of what has been bought and spent, and reminds you as the big day gets closer.',
+    points: ['Spent vs. budget', 'Target-date countdown', 'Reminders'],
+    screen: home,
+    alt: 'Sepello home screen with a countdown to the wedding and total spent against the budget',
+  },
+  {
+    id: 'data',
+    eyebrow: 'Your data, your call',
+    title: 'Take your data with you — or delete it.',
+    body: 'Export your lists, items and purchases as CSV and JSON whenever you like, and delete your account from inside the app.',
+    points: ['Data export', 'Account deletion'],
+    screen: profile,
+    alt: 'Sepello profile screen with preferences and the data export option',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Sepello',
+  applicationCategory: 'LifestyleApplication',
+  operatingSystem: 'iOS, Android',
+  description:
+    'Sepello is a shared shopping-list app for life’s big moments — a new home, a baby, a wedding, school, a hospital bag — where families plan together, track prices and spending, and ask a community what to buy.',
+  url: `${site.url}/sepello`,
+  author: { '@type': 'Person', name: site.name, url: site.url },
+};
+---
+
+<Base
+  title="Sepello — Get ready for the big moments together"
+  description="Sepello is a shared shopping-list app for life’s big moments — a new home, a baby, a wedding, school, a hospital bag. Families plan together, track prices and spending, and start from ready-made lists. Coming soon to iOS and Android."
+  ogImage="/og/sepello.png"
+  lightMode
+  themeColor="#0e0f14"
+  bodyClass="page-sepello"
+  jsonLd={jsonLd}
+>
+  <Nav home={false} />
+
+  <main id="main">
+    {/* ---------------- Hero ---------------- */}
+    <section class="sp-hero" aria-labelledby="sp-title">
+      <div class="sp-hero__bg" aria-hidden="true"></div>
+      <div class="container sp-hero__grid">
+        <div class="sp-hero__copy">
+          <div class="sp-hero__badges" data-hero-in>
+            <AppIcon app={sepello} size={64} eager />
+            <span class="sp-badge">
+              <span class="sp-badge__dot" aria-hidden="true"></span>
+              Coming soon to iOS and Android
+            </span>
+          </div>
+          <h1 id="sp-title" class="sp-hero__title" data-hero-in>
+            <Image src={wordmarkCream} alt="Sepello" class="wm wm--cream" widths={[420, 840]} sizes="(max-width: 700px) 70vw, 420px" loading="eager" fetchpriority="high" />
+            <Image src={wordmarkInk} alt="" aria-hidden="true" class="wm wm--ink" widths={[420, 840]} sizes="(max-width: 700px) 70vw, 420px" loading="eager" />
+          </h1>
+          <p class="sp-hero__tagline" data-hero-in>Get ready for the big moments <span class="serif">together.</span></p>
+          <p class="sp-hero__sub" data-hero-in>New home, baby, school or trousseau: share your list with the people you love.</p>
+          <p class="sp-hero__one" data-hero-in>
+            Sepello is a shared shopping-list app for life’s big moments — a new home, a baby, a wedding, school, a hospital bag —
+            where families plan together, track prices and spending, and ask a community what to buy.
+          </p>
+          <div class="sp-hero__actions" data-hero-in>
+            <a class="btn" href="#features">See how it works</a>
+            <a class="btn btn--ghost" href={mailto('Sepello')}>{site.email}</a>
+          </div>
+        </div>
+
+        <div class="sp-hero__phones" aria-hidden="true" data-hero-visual>
+          <Phone class="sp-phone sp-phone--l">
+            <Image src={myLists} alt="" widths={[260, 520]} sizes="230px" loading="eager" />
+          </Phone>
+          <Phone class="sp-phone sp-phone--c">
+            <Image src={welcome} alt="" widths={[300, 600]} sizes="270px" loading="eager" fetchpriority="high" />
+          </Phone>
+          <Phone class="sp-phone sp-phone--r">
+            <Image src={home} alt="" widths={[260, 520]} sizes="230px" loading="eager" />
+          </Phone>
+        </div>
+      </div>
+    </section>
+
+    {/* ---------------- Status strip ---------------- */}
+    <section class="sp-status" aria-label="Status">
+      <div class="container">
+        <dl class="sp-status__list">
+          <div><dt>Status</dt><dd>In development, preparing for launch</dd></div>
+          <div><dt>Platforms</dt><dd>iOS and Android</dd></div>
+          <div><dt>First market</dt><dd>Türkiye</dd></div>
+          <div><dt>Languages</dt><dd>Turkish first · English ready</dd></div>
+          <div><dt>Started</dt><dd>April 2026</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    {/* ---------------- Problem ---------------- */}
+    <section class="sp-problem section" aria-labelledby="problem-title">
+      <div class="container sp-problem__grid">
+        <div>
+          <p class="eyebrow" data-reveal>The problem</p>
+          <h2 id="problem-title" data-reveal style="--d: 80ms">Big moments come with long lists — <span class="serif">and they end up everywhere.</span></h2>
+        </div>
+        <div class="sp-problem__body" data-reveal style="--d: 140ms">
+          <p>
+            When a family prepares for a new home, a baby or a wedding, the list lives in a WhatsApp group, a notes app and a camera
+            roll full of screenshots. Links get lost. Two people buy the same thing. Nobody can say what has been spent.
+          </p>
+          <ul class="sp-scatter" aria-hidden="true">
+            <li style="--r: -6deg">WhatsApp group</li>
+            <li style="--r: 4deg">Notes app</li>
+            <li style="--r: -2deg">Screenshots</li>
+            <li style="--r: 7deg">Spreadsheet</li>
+            <li class="q" style="--r: -4deg">Who bought the kettle?</li>
+            <li class="q" style="--r: 3deg">How much have we spent?</li>
+          </ul>
+          <p class="sp-problem__answer">Sepello puts it in one shared list — with the prices, the budget and the people.</p>
+        </div>
+      </div>
+    </section>
+
+    {/* ---------------- Features ---------------- */}
+    <section class="sp-features" id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow" data-reveal>What it does</p>
+          <h2 id="features-title" data-reveal style="--d: 80ms">Everything for the list, <span class="serif">nothing else.</span></h2>
+        </div>
+
+        <div class="sp-feature-list">
+          {
+            features.map((f, i) => (
+              <article class:list={['sp-feature', { 'sp-feature--flip': i % 2 === 1 }]} aria-labelledby={`f-${f.id}`}>
+                <div class="sp-feature__copy" data-reveal>
+                  <p class="eyebrow">{f.eyebrow}</p>
+                  <h3 id={`f-${f.id}`}>{f.title}</h3>
+                  <p>{f.body}</p>
+                  <ul>
+                    {f.points.map((p) => (
+                      <li>{p}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="sp-feature__media" data-reveal style="--d: 100ms">
+                  <div class="sp-feature__halo" aria-hidden="true" />
+                  <Phone label={f.alt}>
+                    <Image src={f.screen} alt="" widths={[300, 600]} sizes="(max-width: 700px) 60vw, 290px" loading="lazy" />
+                  </Phone>
+                </div>
+              </article>
+            ))
+          }
+
+          <article class="sp-community" aria-labelledby="f-community" data-reveal>
+            <div>
+              <p class="eyebrow">Community <span class="sp-soon">Coming after launch</span></p>
+              <h3 id="f-community">Ask the people who’ve been there.</h3>
+              <p>
+                Ask a question, put two products side by side and let others vote, and share your finished list as a template for
+                the next family. Built and tested — switched on after launch.
+              </p>
+            </div>
+            <div class="sp-vote" aria-hidden="true">
+              <p class="sp-vote__q">Which one for the new kitchen?</p>
+              <div class="sp-vote__opts">
+                <span><i></i>Option A</span>
+                <span><i></i>Option B</span>
+              </div>
+            </div>
+          </article>
+        </div>
+        <p class="sp-note">Screens are from the current build, in Turkish — the language Sepello launches in first.</p>
+      </div>
+    </section>
+
+    {/* ---------------- Built with Claude ---------------- */}
+    <section class="sp-claude section" aria-labelledby="claude-title">
+      <div class="container">
+        <div class="sp-claude__card">
+          <div class="sp-claude__copy">
+            <p class="eyebrow" data-reveal>Built with Claude</p>
+            <h2 id="claude-title" data-reveal style="--d: 80ms">One person. <span class="serif">Built end to end with Claude Code.</span></h2>
+            <p data-reveal style="--d: 140ms">
+              Sepello is a one-person team. From design decisions to the backend — the Flutter app, the Firebase services, the
+              security rules and the tests — the whole product was developed with Claude Code as a daily pair.
+            </p>
+            <ul class="sp-stack" data-reveal style="--d: 200ms" aria-label="Stack">
+              <li>Flutter</li>
+              <li>Firebase</li>
+              <li>Firestore</li>
+              <li>Cloud Functions</li>
+              <li>Firebase Auth</li>
+              <li>TypeScript</li>
+              <li>GitHub Actions</li>
+            </ul>
+          </div>
+          <dl class="sp-facts" data-reveal style="--d: 120ms">
+            {
+              facts.map((f) => (
+                <div>
+                  <dd>{f.value}</dd>
+                  <dt>{f.label}</dt>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+        <p class="sp-note">Counted from the GitHub repository and its CI, October 2026.</p>
+      </div>
+    </section>
+
+    {/* ---------------- Founder ---------------- */}
+    <section class="sp-founder section" aria-labelledby="founder-title">
+      <div class="container sp-founder__grid">
+        <Image src={portrait} alt={`Portrait of ${site.name}`} class="sp-founder__img" widths={[240, 480]} sizes="240px" loading="lazy" />
+        <div>
+          <p class="eyebrow" data-reveal>Founder</p>
+          <h2 id="founder-title" data-reveal style="--d: 80ms">{site.name}</h2>
+          <p data-reveal style="--d: 140ms">
+            A Flutter developer in Istanbul who has been shipping apps to the App Store and Google Play since 2022 — AI products,
+            live streaming, social and enterprise platforms. Sepello is his own.
+          </p>
+          <a class="sp-link" href="/" data-reveal style="--d: 200ms">
+            See his work at {site.domain}
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {/* ---------------- Contact ---------------- */}
+    <section class="sp-contact section" id="contact" aria-labelledby="sp-contact-title">
+      <div class="container sp-contact__inner">
+        <p class="eyebrow" data-reveal>Contact</p>
+        <h2 id="sp-contact-title" data-reveal style="--d: 80ms">Questions, partnerships or press?</h2>
+        <a class="sp-mail" href={mailto('Sepello')} data-reveal style="--d: 140ms">
+          {site.email}
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M8.5 6H18v9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  import { gsap, prefersReducedMotion } from '../scripts/motion';
+
+  if (!prefersReducedMotion()) {
+    gsap.from('[data-hero-in]', { y: 26, opacity: 0, duration: 1.1, stagger: 0.08, ease: 'expo.out', delay: 0.1 });
+    gsap.from('.sp-phone', { y: 80, opacity: 0, duration: 1.4, stagger: 0.12, ease: 'expo.out', delay: 0.2 });
+    gsap.to('.sp-phone--l', { yPercent: -10, ease: 'none', scrollTrigger: { trigger: '.sp-hero', start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.to('.sp-phone--r', { yPercent: -16, ease: 'none', scrollTrigger: { trigger: '.sp-hero', start: 'top top', end: 'bottom top', scrub: true } });
+  }
+</script>
+
+<style>
+  :global(.page-sepello) {
+    --brand: #7839ee;
+    --brand-2: #a48afb;
+    --dot: #ef5a3c;
+    --accent: #b69bff;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :global(.page-sepello) {
+      --accent: #7839ee;
+    }
+  }
+
+  /* Wordmark swaps with the theme */
+  :global(.wm--ink) {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :global(.wm--ink) {
+      display: block;
+    }
+
+    :global(.wm--cream) {
+      display: none;
+    }
+  }
+
+  /* ---------------- Hero ---------------- */
+  .sp-hero {
+    position: relative;
+    padding-top: calc(var(--header-h) + clamp(40px, 7vw, 96px));
+    padding-bottom: clamp(48px, 7vw, 96px);
+    overflow: hidden;
+  }
+
+  .sp-hero__bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 70% at 85% 20%, color-mix(in srgb, var(--brand) 38%, transparent), transparent 70%),
+      radial-gradient(40% 50% at 10% 90%, color-mix(in srgb, var(--dot) 14%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+
+  .sp-hero__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+  }
+
+  .sp-hero__copy {
+    display: grid;
+    justify-items: start;
+    gap: 22px;
+  }
+
+  .sp-hero__badges {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .sp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding-inline: 14px;
+    border-radius: 999px;
+    background: var(--tint);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    font-size: var(--fs-sm);
+    font-weight: 520;
+  }
+
+  .sp-badge__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--dot);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--dot) 22%, transparent);
+  }
+
+  .sp-hero__title {
+    margin: 6px 0 0;
+    line-height: 0;
+  }
+
+  .sp-hero__title :global(.wm) {
+    width: clamp(220px, 30vw, 420px);
+    height: auto;
+  }
+
+  .sp-hero__tagline {
+    font-size: clamp(2rem, 1.3rem + 2.6vw, 3.6rem);
+    font-weight: 560;
+    letter-spacing: -0.045em;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+
+  .sp-hero__tagline .serif {
+    color: var(--accent);
+  }
+
+  .sp-hero__sub {
+    font-size: var(--fs-md);
+  }
+
+  .sp-hero__one {
+    max-width: 54ch;
+    color: var(--text-2);
+  }
+
+  .sp-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 6px;
+  }
+
+  .sp-hero__phones {
+    position: relative;
+    height: clamp(460px, 48vw, 640px);
+  }
+
+  .sp-hero__phones :global(.sp-phone) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+
+  .sp-hero__phones :global(.sp-phone--c) {
+    --phone-w: clamp(220px, 19vw, 280px);
+    z-index: 3;
+    translate: -50% -50%;
+  }
+
+  .sp-hero__phones :global(.sp-phone--l) {
+    --phone-w: clamp(180px, 15.5vw, 230px);
+    z-index: 2;
+    translate: -118% -44%;
+    rotate: -8deg;
+  }
+
+  .sp-hero__phones :global(.sp-phone--r) {
+    --phone-w: clamp(180px, 15.5vw, 230px);
+    z-index: 2;
+    translate: 18% -40%;
+    rotate: 8deg;
+  }
+
+  /* ---------------- Status ---------------- */
+  .sp-status__list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin: 0;
+    border-block: 1px solid var(--line);
+  }
+
+  .sp-status__list div {
+    padding: 20px 20px 20px 0;
+  }
+
+  .sp-status__list div + div {
+    padding-left: 20px;
+    border-left: 1px solid var(--line);
+  }
+
+  .sp-status__list dt {
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .sp-status__list dd {
+    margin: 6px 0 0;
+    font-weight: 520;
+  }
+
+  /* ---------------- Problem ---------------- */
+  .sp-problem__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 96px);
+  }
+
+  .sp-problem h2 {
+    margin-top: 18px;
+    font-size: var(--fs-2xl);
+  }
+
+  .sp-problem__body {
+    display: grid;
+    gap: 28px;
+    align-content: start;
+    padding-top: 36px;
+  }
+
+  .sp-problem__body > p:first-child {
+    color: var(--text-2);
+    font-size: var(--fs-md);
+  }
+
+  .sp-scatter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sp-scatter li {
+    padding: 10px 16px;
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow:
+      inset 0 0 0 1px var(--line),
+      0 10px 24px -14px rgb(0 0 0 / 0.4);
+    font-size: var(--fs-sm);
+    rotate: var(--r);
+  }
+
+  .sp-scatter li.q {
+    background: color-mix(in srgb, var(--dot) 14%, var(--surface));
+    font-style: italic;
+  }
+
+  .sp-problem__answer {
+    font-size: var(--fs-lg);
+    font-weight: 540;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---------------- Features ---------------- */
+  .sp-features {
+    padding-block: clamp(48px, 8vw, 120px);
+  }
+
+  .sp-feature-list {
+    display: grid;
+    gap: clamp(48px, 7vw, 96px);
+  }
+
+  .sp-feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(32px, 6vw, 96px);
+  }
+
+  .sp-feature--flip .sp-feature__copy {
+    order: 2;
+  }
+
+  .sp-feature__copy {
+    display: grid;
+    gap: 16px;
+    justify-items: start;
+  }
+
+  .sp-feature__copy h3 {
+    font-size: var(--fs-xl);
+    letter-spacing: -0.04em;
+  }
+
+  .sp-feature__copy > p:not(.eyebrow) {
+    max-width: 50ch;
+    color: var(--text-2);
+    font-size: var(--fs-md);
+  }
+
+  .sp-feature__copy ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sp-feature__copy li {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--brand) 12%, transparent);
+    color: var(--text);
+    font-size: var(--fs-sm);
+  }
+
+  .sp-feature__media {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding-block: 24px;
+  }
+
+  .sp-feature__media :global(.phone) {
+    --phone-w: clamp(220px, 22vw, 290px);
+    position: relative;
+  }
+
+  .sp-feature__halo {
+    position: absolute;
+    width: min(100%, 460px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--brand) 32%, transparent), transparent);
+  }
+
+  .sp-community {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 40px;
+    padding: clamp(28px, 4vw, 48px);
+    border-radius: 36px;
+    background: var(--tint);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .sp-community h3 {
+    margin-block: 14px 12px;
+    font-size: var(--fs-xl);
+    letter-spacing: -0.04em;
+  }
+
+  .sp-community p:not(.eyebrow) {
+    max-width: 54ch;
+    color: var(--text-2);
+  }
+
+  .sp-soon {
+    margin-left: 8px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--dot) 18%, transparent);
+    color: var(--text);
+    letter-spacing: 0.06em;
+  }
+
+  .sp-vote {
+    display: grid;
+    gap: 14px;
+    padding: 20px;
+    border-radius: 24px;
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .sp-vote__q {
+    font-weight: 560;
+  }
+
+  .sp-vote__opts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .sp-vote__opts span {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 16px;
+    background: var(--tint);
+    font-size: var(--fs-sm);
+    text-align: center;
+  }
+
+  .sp-vote__opts i {
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--brand) 40%, var(--surface)), color-mix(in srgb, var(--brand-2) 20%, var(--surface)));
+  }
+
+  .sp-vote__opts span:last-child i {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--dot) 35%, var(--surface)), color-mix(in srgb, #f670c7 20%, var(--surface)));
+  }
+
+  .sp-note {
+    margin-top: 28px;
+    color: var(--text-3);
+    font-size: var(--fs-xs);
+  }
+
+  /* ---------------- Built with Claude ---------------- */
+  .sp-claude__card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+    padding: clamp(28px, 5vw, 64px);
+    border-radius: 44px;
+    background:
+      radial-gradient(70% 90% at 100% 0%, rgb(217 119 87 / 0.18), transparent 60%),
+      var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .sp-claude__copy {
+    display: grid;
+    gap: 20px;
+  }
+
+  .sp-claude__copy h2 {
+    font-size: var(--fs-2xl);
+  }
+
+  .sp-claude__copy > p:not(.eyebrow) {
+    color: var(--text-2);
+    font-size: var(--fs-md);
+  }
+
+  .sp-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sp-stack li {
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: var(--tint);
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-size: var(--fs-sm);
+  }
+
+  .sp-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    margin: 0;
+    border-radius: 28px;
+    overflow: hidden;
+    background: var(--line);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+
+  .sp-facts div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: clamp(18px, 2.4vw, 28px);
+    background: var(--surface);
+  }
+
+  .sp-facts dd {
+    margin: 0;
+    font-size: clamp(1.9rem, 1.3rem + 2vw, 3rem);
+    font-weight: 560;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .sp-facts dt {
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+
+  @supports (corner-shape: squircle) {
+    .sp-claude__card,
+    .sp-community {
+      border-radius: 80px;
+      corner-shape: squircle;
+    }
+  }
+
+  /* ---------------- Founder ---------------- */
+  .sp-founder__grid {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: center;
+  }
+
+  .sp-founder__grid :global(.sp-founder__img) {
+    width: 240px;
+    height: 240px;
+    object-fit: cover;
+    object-position: center 30%;
+    border-radius: 36px;
+  }
+
+  .sp-founder h2 {
+    margin-block: 12px 14px;
+    font-size: var(--fs-xl);
+  }
+
+  .sp-founder p:not(.eyebrow) {
+    max-width: 58ch;
+    color: var(--text-2);
+    font-size: var(--fs-md);
+  }
+
+  .sp-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+    font-weight: 560;
+  }
+
+  .sp-link svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .sp-link:hover svg {
+    transform: translateX(3px);
+  }
+
+  /* ---------------- Contact ---------------- */
+  .sp-contact {
+    border-top: 1px solid var(--line);
+  }
+
+  .sp-contact__inner {
+    display: grid;
+    justify-items: start;
+    gap: 18px;
+  }
+
+  .sp-contact h2 {
+    font-size: var(--fs-2xl);
+  }
+
+  .sp-mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--fs-xl);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    overflow-wrap: anywhere;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat;
+    transition: background-size 0.6s var(--ease-out);
+  }
+
+  .sp-mail:hover {
+    background-size: 100% 1.5px;
+  }
+
+  .sp-mail svg {
+    width: 0.8em;
+    height: 0.8em;
+    flex: none;
+  }
+
+  /* ---------------- Responsive ---------------- */
+  @media (max-width: 960px) {
+    .sp-hero__grid,
+    .sp-problem__grid,
+    .sp-feature,
+    .sp-community,
+    .sp-claude__card {
+      grid-template-columns: 1fr;
+    }
+
+    .sp-feature--flip .sp-feature__copy {
+      order: 0;
+    }
+
+    .sp-status__list {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .sp-status__list div,
+    .sp-status__list div + div {
+      padding: 16px 0;
+      border-left: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sp-problem__body {
+      padding-top: 0;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .sp-hero__phones {
+      height: 440px;
+    }
+
+    .sp-hero__phones :global(.sp-phone--c) {
+      --phone-w: 200px;
+    }
+
+    .sp-hero__phones :global(.sp-phone--l),
+    .sp-hero__phones :global(.sp-phone--r) {
+      --phone-w: 160px;
+    }
+
+    .sp-founder__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .sp-facts {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

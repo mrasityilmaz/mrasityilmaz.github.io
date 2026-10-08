@@ -1,0 +1,228 @@
+---
+interface Role {
+  period: string;
+  title: string;
+  company: string;
+  where?: string;
+  summary: string;
+  apps?: { id: string; name: string }[];
+}
+
+/* Dates come from the CV, cross-checked against git history where a repo exists. */
+const roles: Role[] = [
+  {
+    period: '2026 — now',
+    title: 'Founder',
+    company: 'Sepello',
+    summary: 'Designing and building a shared-list app for life’s big moments, end to end with Claude Code.',
+    apps: [{ id: 'sepello', name: 'Sepello' }],
+  },
+  {
+    period: '2026 — now',
+    title: 'Freelance Flutter Developer',
+    company: 'Melody Yazılım',
+    where: 'via Appik',
+    summary:
+      'Three AI consumer apps on both stores: sleep sounds with on-device sleep tracking, an AI photo enhancer and an AI song creator — architecture, monetization, releases.',
+    apps: [
+      { id: 'sleepia', name: 'Sleepia' },
+      { id: 'memora', name: 'Memora' },
+      { id: 'melodyia', name: 'Melodyia' },
+    ],
+  },
+  {
+    period: '2026 — now',
+    title: 'Product Lead & Developer',
+    company: 'Kırmızıtaşlar',
+    where: 'Erzincan',
+    summary: 'A staff app and back office for an İstikbal furniture dealer, built on top of the company’s SAP data.',
+    apps: [{ id: 'kirmizitaslar', name: 'Kırmızıtaşlar' }],
+  },
+  {
+    period: 'Apr 2025 — Feb 2026',
+    title: 'Flutter Developer',
+    company: 'Commnia',
+    where: 'via Larsca',
+    summary:
+      'Four modules from scratch on an Australian construction platform — including NIA, a multi-provider AI assistant — plus the shared component library the team builds on.',
+    apps: [{ id: 'commnia', name: 'Commnia' }],
+  },
+  {
+    period: 'Jul 2024 — Mar 2025',
+    title: 'Flutter Developer',
+    company: 'DudoLive',
+    where: 'Artussu Teknoloji',
+    summary: 'Hired to fix performance on a live-streaming app: profiled GPU pressure and state around the streaming SDK and cut the jank.',
+    apps: [{ id: 'dudolive', name: 'DudoLive' }],
+  },
+  {
+    period: 'Oct 2023 — Feb 2024',
+    title: 'Flutter Developer',
+    company: 'Regant+ / Inflero',
+    summary: 'Production UIs from design for Inflero, Dostoom and DoggyHush, with REST integrations.',
+    apps: [{ id: 'dostoom', name: 'Dostoom' }],
+  },
+  {
+    period: 'Jan — Sep 2023',
+    title: 'Flutter Developer',
+    company: 'Voco',
+    summary: 'The most active developer on a social discovery app: features, a layered architecture with tests, and releases.',
+    apps: [{ id: 'voco', name: 'Voco' }],
+  },
+  {
+    period: 'Aug — Nov 2022',
+    title: 'Freelance Flutter Developer',
+    company: 'Sportvy',
+    summary: 'Sole developer: every screen, the C# / MS SQL backend integration and the store releases.',
+    apps: [{ id: 'sportvy', name: 'Sportvy' }],
+  },
+  {
+    period: 'Feb — Aug 2022',
+    title: 'Flutter Developer',
+    company: 'Squamobi',
+    where: 'İzmir',
+    summary: 'Consumer apps in a small team: I wrote nearly all of Reposti, and built share flows, reminders, paywalls and ads across the faith and quotes apps.',
+    apps: [
+      { id: 'reposti', name: 'Reposti' },
+      { id: 'daily-hadith', name: 'Daily Hadith' },
+      { id: 'muslim-guide', name: 'Muslim Guide' },
+      { id: 'nabu', name: 'Nabu' },
+    ],
+  },
+];
+---
+
+<section class="exp section" id="experience" aria-labelledby="exp-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow" data-reveal>Experience</p>
+      <h2 id="exp-title" data-reveal style="--d: 80ms">Where I’ve <span class="serif">built.</span></h2>
+    </div>
+
+    <ol class="exp__list">
+      {
+        roles.map((r, i) => (
+          <li class="exp__row" data-reveal style={`--d:${Math.min(i, 4) * 50}ms`}>
+            <p class="exp__period">{r.period}</p>
+            <div class="exp__main">
+              <h3>
+                {r.company}
+                {r.where && <span class="exp__where"> · {r.where}</span>}
+              </h3>
+              <p class="exp__title">{r.title}</p>
+            </div>
+            <p class="exp__summary">{r.summary}</p>
+            {r.apps && (
+              <ul class="exp__apps" aria-label="Apps">
+                {r.apps.map((a) => (
+                  <li>
+                    <a href={`#app-${a.id}`}>{a.name}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="exp__edu" data-reveal>
+      <p class="exp__period">2018 — 2022</p>
+      <div class="exp__main">
+        <h3>Fırat University</h3>
+        <p class="exp__title">B.Sc. Software Engineering</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .exp__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .exp__row,
+  .exp__edu {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: 8px 40px;
+    padding-block: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .exp__row:hover h3 {
+    color: var(--accent);
+  }
+
+  .exp__period {
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.04em;
+    padding-top: 6px;
+  }
+
+  .exp__main h3 {
+    font-size: clamp(1.25rem, 1.05rem + 0.7vw, 1.6rem);
+    letter-spacing: -0.03em;
+    transition: color 0.3s;
+  }
+
+  .exp__where {
+    color: var(--text-3);
+    font-weight: 450;
+  }
+
+  .exp__title {
+    margin-top: 4px;
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+
+  .exp__summary {
+    color: var(--text-2);
+  }
+
+  .exp__apps {
+    grid-column: 3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .exp__apps a {
+    display: inline-flex;
+    padding: 4px 11px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    color: var(--text);
+    font-size: 0.8125rem;
+    transition: background-color 0.25s;
+  }
+
+  .exp__apps a:hover {
+    background: rgb(255 255 255 / 0.07);
+  }
+
+  .exp__edu {
+    border-bottom: 0;
+    margin-top: 32px;
+  }
+
+  @media (max-width: 860px) {
+    .exp__row,
+    .exp__edu {
+      grid-template-columns: 1fr;
+    }
+
+    .exp__apps {
+      grid-column: 1;
+    }
+  }
+</style>

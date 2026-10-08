@@ -1,0 +1,153 @@
+---
+import StatusBar from './StatusBar.astro';
+
+/**
+ * A CSS-only iPhone mockup. Every measurement is relative to the phone's own
+ * width (container query units), so it scales cleanly at any size.
+ * Content goes into the default slot and fills the screen.
+ */
+interface Props {
+  class?: string;
+  /** Draws a minimal iOS status bar on top of the screen content. */
+  statusBar?: boolean;
+  /** 'light' renders dark status-bar glyphs for light screens. */
+  statusTone?: 'light' | 'dark';
+  label?: string;
+}
+
+const { class: className, statusBar = false, statusTone = 'dark', label } = Astro.props;
+---
+
+<div class:list={['phone', className]} role={label ? 'img' : undefined} aria-label={label}>
+  <span class="phone__btn phone__btn--action" aria-hidden="true"></span>
+  <span class="phone__btn phone__btn--up" aria-hidden="true"></span>
+  <span class="phone__btn phone__btn--down" aria-hidden="true"></span>
+  <span class="phone__btn phone__btn--power" aria-hidden="true"></span>
+  <div class="phone__rim">
+    <div class="phone__bezel">
+      <div class="phone__screen">
+        <slot />
+        {statusBar && <StatusBar tone={statusTone} />}
+        <span class="phone__island" aria-hidden="true"></span>
+        <span class="phone__glare" aria-hidden="true"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .phone {
+    container-type: inline-size;
+    position: relative;
+    width: var(--phone-w, 300px);
+    aspect-ratio: 433 / 882;
+    flex: none;
+  }
+
+  .phone__rim {
+    position: absolute;
+    inset: 0;
+    padding: 1.15cqw;
+    border-radius: 17.2cqw;
+    background:
+      linear-gradient(160deg, #8d9098 0%, #3c3e44 18%, #24252a 46%, #4b4e55 72%, #9a9da5 100%);
+    box-shadow:
+      inset 0 0 0 0.35cqw rgb(255 255 255 / 0.22),
+      inset 0 0 0.8cqw rgb(0 0 0 / 0.6),
+      0 2cqw 4cqw -1cqw rgb(0 0 0 / 0.55),
+      0 14cqw 28cqw -10cqw rgb(0 0 0 / 0.75);
+  }
+
+  .phone__bezel {
+    height: 100%;
+    padding: 3.6cqw;
+    border-radius: 16cqw;
+    background: #030303;
+    box-shadow: inset 0 0 0 0.5cqw #111;
+  }
+
+  .phone__screen {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    isolation: isolate;
+    border-radius: 12.6cqw;
+    background: #000;
+    transform: translateZ(0);
+  }
+
+  .phone__screen :global(> img),
+  .phone__screen :global(> picture > img),
+  .phone__screen :global(> video) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .phone__island {
+    position: absolute;
+    z-index: 20;
+    top: 2.5cqw;
+    left: 50%;
+    width: 29cqw;
+    height: 8.6cqw;
+    border-radius: 999px;
+    background: #000;
+    transform: translateX(-50%);
+  }
+
+  .phone__island::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 3.2cqw;
+    width: 3.2cqw;
+    height: 3.2cqw;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #2b3a6b, #0a0d1a 60%);
+    transform: translateY(-50%);
+  }
+
+  .phone__glare {
+    position: absolute;
+    inset: 0;
+    z-index: 19;
+    pointer-events: none;
+    border-radius: inherit;
+    background: linear-gradient(115deg, rgb(255 255 255 / 0.07) 0%, rgb(255 255 255 / 0) 32%);
+  }
+
+  .phone__btn {
+    position: absolute;
+    width: 0.9cqw;
+    border-radius: 0.6cqw;
+    background: linear-gradient(90deg, #2a2b30, #6d7077 60%, #3a3c41);
+  }
+
+  .phone__btn--action {
+    left: -0.6cqw;
+    top: 19%;
+    height: 7cqw;
+  }
+
+  .phone__btn--up {
+    left: -0.6cqw;
+    top: 27.5%;
+    height: 13cqw;
+  }
+
+  .phone__btn--down {
+    left: -0.6cqw;
+    top: 36%;
+    height: 13cqw;
+  }
+
+  .phone__btn--power {
+    right: -0.6cqw;
+    top: 30%;
+    height: 20cqw;
+  }
+</style>

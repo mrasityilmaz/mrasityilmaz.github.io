@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+import type { AppEntry } from '../data/apps';
+
+interface Props {
+  app: Pick<AppEntry, 'name' | 'icon' | 'brand'> & { glyph?: string };
+  size?: number;
+  class?: string;
+  eager?: boolean;
+}
+
+const { app, size = 64, class: className, eager = false } = Astro.props;
+---
+
+{/* iOS-style squircle: the shape is a superellipse mask, the shadow lives on the unmasked wrapper. */}
+<span class:list={['app-icon', className]} style={`--size:${size}px;--brand:${app.brand.glow}`}>
+  <span class="app-icon__shape">
+    {
+      app.icon ? (
+        <Image
+          src={app.icon}
+          alt=""
+          width={size}
+          height={size}
+          densities={[1, 2]}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      ) : (
+        <span class="app-icon__fallback" aria-hidden="true">
+          {app.glyph ? <span set:html={app.glyph} /> : app.name.charAt(0)}
+        </span>
+      )
+    }
+  </span>
+</span>
+
+<style>
+  .app-icon {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: var(--size);
+    height: var(--size);
+    filter: drop-shadow(0 calc(var(--size) * 0.08) calc(var(--size) * 0.16) rgb(0 0 0 / 0.45));
+  }
+
+  .app-icon__shape {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    background: #111;
+    border-radius: 23%;
+    -webkit-mask: url('/squircle.svg') center / 100% 100% no-repeat;
+    mask: url('/squircle.svg') center / 100% 100% no-repeat;
+  }
+
+  .app-icon__shape::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+    pointer-events: none;
+  }
+
+  .app-icon :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .app-icon__fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(120% 90% at 20% 10%, rgb(255 255 255 / 0.28), transparent 55%),
+      linear-gradient(150deg, color-mix(in srgb, var(--brand) 85%, white), var(--brand) 55%, color-mix(in srgb, var(--brand) 70%, black));
+    color: #fff;
+    font-size: calc(var(--size) * 0.46);
+    font-weight: 620;
+    letter-spacing: -0.04em;
+  }
+
+  .app-icon__fallback :global(svg) {
+    width: 52%;
+    height: 52%;
+  }
+</style>

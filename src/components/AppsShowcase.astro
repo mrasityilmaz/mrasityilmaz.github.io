@@ -1,0 +1,1140 @@
+---
+import { Image } from 'astro:assets';
+import Phone from './Phone.astro';
+import StatusBar from './StatusBar.astro';
+import AppIcon from './AppIcon.astro';
+import { galleryOf, type AppEntry } from '../data/apps';
+
+interface Props {
+  apps: AppEntry[];
+}
+
+const { apps } = Astro.props;
+
+const first = apps[0];
+const years = [...new Set(apps.map((a) => a.year))];
+const span = `${apps[apps.length - 1].year} — ${apps[0].year}`;
+
+// Portrait store shots fan out around the phone; landscape ones (iPad) only appear in the gallery.
+// Apps without store shots fan out their other raw screens instead.
+const fanOf = (app: AppEntry) =>
+  app.store.length
+    ? app.store.filter((img) => img.height > img.width).slice(0, 4)
+    : app.phone.fit === 'contain'
+      ? []
+      : app.phone.screens.slice(1, 5);
+
+// Fan slots: [x (phone widths), y (%), rotation (deg), scale, z]
+const SLOTS = [
+  [-0.62, 3, -7, 0.88, 2],
+  [0.62, 5, 6, 0.88, 2],
+  [-1.14, 13, -13, 0.76, 1],
+  [1.1, 15, 12, 0.76, 1],
+] as const;
+
+const storeLink = (app: AppEntry) => app.links.appStore ?? app.links.googlePlay;
+---
+
+<section
+  class="apps"
+  id="apps"
+  aria-labelledby="apps-title"
+  data-apps
+  data-glows={JSON.stringify(apps.map((a) => a.brand.glow))}
+  style={`--glow:${first.brand.glow}`}
+>
+  <div class="container apps__layout">
+    <div class="apps__col">
+      <div class="apps__head">
+        <p class="eyebrow" data-reveal>Selected apps · {span}</p>
+        <h2 id="apps-title" data-reveal style="--d: 80ms">
+          Apps I’ve built,<br /><span class="serif">newest first.</span>
+        </h2>
+        <p data-reveal style="--d: 160ms">
+          From AI products launched this year to the first apps I shipped in 2022. Scroll — each one opens on the phone the way it
+          would on yours.
+        </p>
+  </div>
+    <ol class="apps__list">
+      {
+        apps.map((app, i) => (
+          <li class="app" id={`app-${app.id}`} data-app={i} style={`--accent:${app.brand.accent}`}>
+            <div class="app__time" aria-hidden="true">
+              <span class="app__year">{app.year}</span>
+            </div>
+
+            <article class="app__body" aria-labelledby={`app-${app.id}-name`}>
+              <header class="app__head">
+                <AppIcon app={app} size={64} />
+                <div>
+                  <h3 id={`app-${app.id}-name`}>{app.name}</h3>
+                  <p class="app__cat">{app.category}</p>
+                </div>
+              </header>
+
+              <p class="app__status">
+                <span class:list={['app__dot', `app__dot--${app.status}`]} aria-hidden="true" />
+                {app.statusLabel}
+              </p>
+
+              <p class="app__summary">{app.summary}</p>
+
+                {/* Mobile: media rail (the sticky stage is desktop-only) */}
+                <div class="app__rail" role="group" aria-label={`${app.name} screens`}>
+                  {(app.phone.video || app.phone.screens.length > 0) && (
+                    <div class="app__rail-phone">
+                      <Phone statusBar={app.phone.statusBar}>
+                        {app.phone.video ? (
+                          <video src={app.phone.video.src} muted loop playsinline preload="none" data-autoplay poster={app.phone.video.poster.src} />
+                        ) : (
+                          <Image
+                        src={app.phone.screens[0]}
+                        alt={`${app.name} app screen`}
+                        class:list={[{ 'fit-contain': app.phone.fit === 'contain' }]}
+                        widths={[260, 520]}
+                        sizes="220px"
+                        loading="lazy"
+                      />
+                        )}
+                      </Phone>
+                    </div>
+                  )}
+                  {(app.store.length ? app.store : app.phone.screens.slice(1)).map((img, k) => (
+                    <button class="app__rail-shot" type="button" data-gallery-open={app.id} data-gallery-index={app.store.length ? k : k + 1} aria-label={`Open ${app.name} screenshot ${(app.store.length ? k : k + 1) + 1}`}>
+                      <Image src={img} alt="" widths={[300, 600]} sizes="240px" loading="lazy" />
+                    </button>
+                  ))}
+                </div>
+
+              <ul class="app__points">
+                {app.highlights.map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+
+              {app.metric && (
+                <p class="app__metric">
+                  <strong>{app.metric.value}</strong>
+                  <span>{app.metric.label}</span>
+                </p>
+              )}
+
+              <dl class="app__meta">
+                <div>
+                  <dt>Role</dt>
+                  <dd>{app.role}</dd>
+                </div>
+                <div>
+                  <dt>For</dt>
+                  <dd>{app.company}</dd>
+                </div>
+                <div>
+                  <dt>When</dt>
+                  <dd>{app.period}</dd>
+                </div>
+              </dl>
+
+              <ul class="app__tech" aria-label="Tech">
+                {app.tech.map((t) => (
+                  <li class="chip">{t}</li>
+                ))}
+              </ul>
+
+              <div class="app__links">
+                {app.links.page && (
+                  <a class="btn" href={app.links.page}>
+                    Read more
+                    <svg viewBox="0 0 16 16" aria-hidden="true">
+                      <path d="M3 8h10M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </a>
+                )}
+                {app.links.appStore && (
+                  <a class="store" href={app.links.appStore} target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.1 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9ZM14 5.5c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.6 2.8-1.4Z" fill="currentColor" /></svg>
+                    App Store
+                  </a>
+                )}
+                {app.links.googlePlay && (
+                  <a class="store" href={app.links.googlePlay} target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.3 2.4c-.3.3-.4.7-.4 1.2v16.8c0 .5.1.9.4 1.2l9.3-9.6-9.3-9.6Zm10.4 10.7 2.7 2.8-11 6.3c-.4.2-.8.3-1.1.2l9.4-9.3Zm0-2.2L5.3 1.6c.3-.1.7 0 1.1.2l11 6.3-2.7 2.8Zm3.9-1.9 2.9 1.7c.9.5.9 1.9 0 2.4l-2.9 1.7-3-3 3-2.8Z" fill="currentColor" /></svg>
+                    Google Play
+                  </a>
+                )}
+                {galleryOf(app).length > 0 && (
+                  <button class="store store--ghost" type="button" data-gallery-open={app.id}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" /><rect x="13.5" y="3.5" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" /><rect x="3.5" y="13.5" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" /><rect x="13.5" y="13.5" width="7" height="7" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" /></svg>
+                    {galleryOf(app).length} screenshots
+                  </button>
+                )}
+                {app.reel && (
+                  <button class="store store--ghost" type="button" data-video-open={app.reel.src} data-video-title={`${app.name} — ${app.reel.label}`}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5L8 5.5Z" fill="currentColor" /></svg>
+                    {app.reel.label}
+                  </button>
+                )}
+              </div>
+              {app.note && <p class="app__note">{app.note}</p>}
+            </article>
+
+          </li>
+        ))
+      }
+    </ol>
+    </div>
+
+    <div class="apps__stage" aria-hidden="true">
+      <div class="stage" data-stage>
+        <div class="stage__glow"></div>
+
+        <div class="stage__years">
+          {years.map((y) => <span data-stage-year={y}>{y}</span>)}
+        </div>
+
+        {
+          apps.map((app, i) => (
+            <div class="stage__fan" data-fan={i}>
+              {fanOf(app).map((img, k) => (
+                <div
+                  class="stage__card"
+                  style={`--x:${SLOTS[k][0]};--y:${SLOTS[k][1]}%;--r:${SLOTS[k][2]}deg;--s:${SLOTS[k][3]};--z:${SLOTS[k][4]};--k:${k}`}
+                >
+                  <Image src={img} alt="" widths={[280, 520]} sizes="260px" loading="lazy" decoding="async" />
+                </div>
+              ))}
+            </div>
+          ))
+        }
+
+        <Phone class="stage__phone">
+          <div class="scr scr--home" data-home>
+            <div class="home__wall"></div>
+            <StatusBar />
+            <div class="home__widget">
+              <span class="home__widget-k">RY</span>
+              <span class="home__widget-l">Apps by Raşit<br />Scroll to open them</span>
+            </div>
+            <ul class="home__grid">
+              {
+                apps.map((app, i) => (
+                  <li data-home-icon={i}>
+                    <AppIcon app={app} size={60} />
+                    <span>{app.shortName ?? app.name}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          {
+            apps.map((app, i) => (
+              <div
+                class:list={['scr scr--app', { 'scr--contain': app.phone.fit === 'contain' }]}
+                data-screen={i}
+                style={`--splash:${app.brand.splash};--ink:${app.brand.splashInk ?? '#fff'}`}
+              >
+                {app.phone.splash ? (
+                  <div class="splash splash--image">
+                    <Image src={app.phone.splash} alt="" widths={[300, 600]} sizes="300px" loading="lazy" decoding="async" />
+                  </div>
+                ) : (
+                  <div class="splash">
+                    <AppIcon app={app} size={96} />
+                    <span class="splash__name">{app.name}</span>
+                  </div>
+                )}
+                {app.phone.video && (
+                  <video class="scr__media" muted loop playsinline preload="none" data-stage-video poster={app.phone.video.poster.src}>
+                    <source src={app.phone.video.src} type="video/mp4" />
+                  </video>
+                )}
+                {app.phone.screens.map((img, k) => (
+                  <div class="scr__media scr__shot" data-shot={k}>
+                    <Image src={img} alt="" widths={[300, 600]} sizes="300px" loading="lazy" decoding="async" />
+                  </div>
+                ))}
+                {app.phone.statusBar && <StatusBar />}
+              </div>
+            ))
+          }
+        </Phone>
+
+        <div class="stage__progress">
+          {apps.map((app, i) => <span data-progress={i} title={app.name} />)}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+
+  const root = document.querySelector<HTMLElement>('[data-apps]');
+  const desktop = window.matchMedia('(min-width: 1024px)');
+
+  if (root) {
+    const items = Array.from(root.querySelectorAll<HTMLElement>('[data-app]'));
+    const screens = Array.from(root.querySelectorAll<HTMLElement>('[data-screen]'));
+    const fans = Array.from(root.querySelectorAll<HTMLElement>('[data-fan]'));
+    const dots = Array.from(root.querySelectorAll<HTMLElement>('[data-progress]'));
+    const home = root.querySelector<HTMLElement>('[data-home]');
+    const homeIcons = Array.from(root.querySelectorAll<HTMLElement>('[data-home-icon]'));
+    // Brand glow per app, rendered by the server.
+    const appGlows = JSON.parse(root.dataset.glows ?? '[]') as string[];
+
+    let active = -2;
+
+    /** Launch animation origin = the app's icon position on the home screen. */
+    const measureOrigins = () => {
+      const scr = home?.getBoundingClientRect();
+      if (!scr || !scr.width) return;
+      homeIcons.forEach((icon, i) => {
+        const r = icon.querySelector('.app-icon')?.getBoundingClientRect() ?? icon.getBoundingClientRect();
+        const ox = ((r.left + r.width / 2 - scr.left) / scr.width) * 100;
+        const oy = ((r.top + r.height / 2 - scr.top) / scr.height) * 100;
+        screens[i]?.style.setProperty('--ox', `${ox}%`);
+        screens[i]?.style.setProperty('--oy', `${oy}%`);
+      });
+    };
+
+    const setVideo = (el: HTMLElement | undefined, play: boolean) => {
+      const v = el?.querySelector<HTMLVideoElement>('video');
+      if (!v) return;
+      if (play) {
+        if (v.preload !== 'auto') v.preload = 'auto';
+        v.play().catch(() => {});
+      } else v.pause();
+    };
+
+    const setActive = (i: number) => {
+      if (i === active) return;
+      const prev = active;
+      active = i;
+      root.classList.toggle('is-app-open', i >= 0);
+      home?.classList.toggle('is-behind', i >= 0);
+
+      screens.forEach((s, k) => {
+        s.classList.toggle('is-open', k === i);
+        s.classList.toggle('is-closing', k === prev && k !== i);
+      });
+      fans.forEach((f, k) => {
+        f.classList.toggle('is-open', k === i);
+        // Keep neighbours mounted so their images are ready; hide the rest from layout work.
+        f.classList.toggle('is-near', Math.abs(k - i) <= 1);
+      });
+      dots.forEach((d, k) => d.classList.toggle('is-on', k === i));
+      items.forEach((el, k) => el.classList.toggle('is-active', k === i));
+
+      if (prev >= 0) setVideo(screens[prev], false);
+      if (i >= 0) setVideo(screens[i], true);
+
+      const year = i >= 0 ? items[i].querySelector('.app__year')?.textContent : null;
+      root.querySelectorAll<HTMLElement>('[data-stage-year]').forEach((y) => y.classList.toggle('is-on', y.dataset.stageYear === year));
+
+      const glow = appGlows[Math.max(0, i)] ?? appGlows[0];
+      if (glow) root.style.setProperty('--glow', glow);
+    };
+
+    /** Within one app, step through its raw screens as you scroll. */
+    const setShot = (i: number, progress: number) => {
+      const shots = screens[i]?.querySelectorAll<HTMLElement>('[data-shot]');
+      if (!shots?.length) return;
+      const hasVideo = !!screens[i].querySelector('video');
+      const steps = shots.length + (hasVideo ? 1 : 0);
+      const idx = Math.min(steps - 1, Math.floor(progress * steps * 0.999));
+      const shotIdx = hasVideo ? idx - 1 : idx;
+      shots.forEach((s, k) => s.classList.toggle('is-on', k === shotIdx));
+      if (hasVideo) screens[i].classList.toggle('is-video', shotIdx < 0);
+    };
+
+    let triggers: ScrollTrigger[] = [];
+
+    const setupDesktop = () => {
+      measureOrigins();
+      triggers = items.map((el, i) =>
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top 55%',
+          end: 'bottom 55%',
+          onToggle: (self) => {
+            if (self.isActive) setActive(i);
+            else if (i === 0 && self.direction < 0) setActive(-1);
+          },
+          onUpdate: (self) => setShot(i, self.progress),
+        }),
+      );
+      setActive(-1);
+      fans.forEach((f, k) => f.classList.toggle('is-near', k <= 1));
+    };
+
+    const teardown = () => {
+      triggers.forEach((t) => t.kill());
+      triggers = [];
+      active = -2;
+    };
+
+    // Mobile: autoplay rail videos only while visible.
+    const railVideos = root.querySelectorAll<HTMLVideoElement>('.app__rail video[data-autoplay]');
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting && !prefersReducedMotion()) {
+            v.preload = 'auto';
+            v.play().catch(() => {});
+          } else v.pause();
+        }),
+      { threshold: 0.4 },
+    );
+    railVideos.forEach((v) => io.observe(v));
+
+    const apply = () => {
+      teardown();
+      if (desktop.matches) setupDesktop();
+    };
+    apply();
+    desktop.addEventListener('change', apply);
+    window.addEventListener('resize', () => desktop.matches && measureOrigins());
+    window.addEventListener('load', measureOrigins);
+  }
+</script>
+
+<style>
+  .apps {
+    position: relative;
+    padding-top: clamp(48px, 6vw, 96px);
+    padding-bottom: clamp(48px, 8vw, 120px);
+    transition: --glow 1.2s var(--ease-out);
+  }
+
+  .apps__head {
+    display: grid;
+    align-content: center;
+    gap: 20px;
+    min-height: 78vh;
+    padding-bottom: 8vh;
+  }
+
+  .apps__head h2 {
+    font-size: var(--fs-2xl);
+  }
+
+  .apps__head p:last-child {
+    max-width: 56ch;
+    color: var(--text-2);
+    font-size: var(--fs-md);
+  }
+
+  .apps__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    gap: clamp(24px, 4vw, 64px);
+  }
+
+  /* ---------------- Chapters (left column) ---------------- */
+  .apps__col {
+    position: relative;
+    z-index: 2;
+  }
+
+  .apps__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .app {
+    position: relative;
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    min-height: 92vh;
+    align-items: center;
+  }
+
+  .app__time {
+    position: relative;
+    align-self: stretch;
+  }
+
+  .app__time::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 10px;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--line-2) 15%, var(--line-2) 85%, transparent);
+  }
+
+  .app__year {
+    position: sticky;
+    top: 50vh;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40vh;
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+    transition: color 0.5s;
+  }
+
+  .app__year::before {
+    content: '';
+    width: 9px;
+    height: 9px;
+    margin-left: 6px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1.5px var(--text-3);
+    transition:
+      background-color 0.5s,
+      box-shadow 0.5s;
+  }
+
+  .app.is-active .app__year {
+    color: var(--text);
+  }
+
+  .app.is-active .app__year::before {
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+
+  .app__body {
+    position: relative;
+    display: grid;
+    gap: 18px;
+    margin-block: 48px;
+    padding: clamp(24px, 2.4vw, 36px);
+    border-radius: var(--r-xl);
+    /* Frosted glass: store screenshots that slide under the text stay visible but blurred. */
+    background: linear-gradient(160deg, rgb(30 30 36 / 0.38), rgb(14 14 18 / 0.26));
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.07),
+      0 30px 80px -40px rgb(0 0 0 / 0.8);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    opacity: 0.4;
+    transition:
+      opacity 0.6s var(--ease-out),
+      box-shadow 0.6s;
+  }
+
+  .app.is-active .app__body {
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.1),
+      0 30px 80px -40px rgb(0 0 0 / 0.8);
+  }
+
+  .app.is-active .app__body {
+    opacity: 1;
+  }
+
+  .app__head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .app__head h3 {
+    font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.6rem);
+    letter-spacing: -0.04em;
+  }
+
+  .app__cat {
+    margin-top: 4px;
+    color: var(--text-2);
+  }
+
+  .app__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .app__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-3);
+  }
+
+  .app__dot--live {
+    background: #6ee7a8;
+    box-shadow: 0 0 0 3px rgb(110 231 168 / 0.18);
+  }
+
+  .app__dot--building {
+    background: #ffc85a;
+    box-shadow: 0 0 0 3px rgb(255 200 90 / 0.18);
+  }
+
+  .app__summary {
+    font-size: var(--fs-md);
+    line-height: 1.5;
+  }
+
+  .app__points {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--text-2);
+    font-size: 0.9375rem;
+  }
+
+  .app__points li {
+    position: relative;
+    padding-left: 22px;
+  }
+
+  .app__points li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.62em;
+    width: 10px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  .app__metric {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .app__metric strong {
+    font-size: clamp(2.25rem, 1.6rem + 2vw, 3.25rem);
+    font-weight: 560;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .app__metric span {
+    color: var(--text-2);
+  }
+
+  .app__meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    padding-block: 16px;
+    border-block: 1px solid var(--line);
+    margin: 0;
+  }
+
+  .app__meta dt {
+    color: var(--text-3);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .app__meta dd {
+    margin: 4px 0 0;
+    font-size: var(--fs-sm);
+  }
+
+  .app__tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .app__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .store {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding-inline: 16px;
+    border-radius: 999px;
+    background: var(--invert-bg);
+    color: var(--invert-text);
+    font-size: var(--fs-sm);
+    font-weight: 560;
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .store:hover {
+    transform: translateY(-2px);
+  }
+
+  .store svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .store--ghost {
+    background: rgb(255 255 255 / 0.06);
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+
+  .app__links .btn {
+    height: 42px;
+  }
+
+  .app__note {
+    color: var(--text-3);
+    font-size: var(--fs-xs);
+  }
+
+  /* ---------------- Stage (right column, sticky) ---------------- */
+  .apps__stage {
+    position: relative;
+  }
+
+  .stage {
+    --phone: clamp(240px, 19vw, 300px);
+    --phone-h: calc(var(--phone) * 882 / 433);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+  }
+
+  .stage__glow {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(110%, 900px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 42%, transparent), transparent 72%);
+    filter: blur(10px);
+    opacity: 0.9;
+    transform: translate(-50%, -50%);
+  }
+
+  .stage__years {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .stage__years span {
+    grid-area: 1 / 1;
+    font-size: clamp(9rem, 4rem + 14vw, 20rem);
+    font-weight: 600;
+    letter-spacing: -0.06em;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(255 255 255 / 0.09);
+    transform: translateY(18%);
+    opacity: 0;
+    transition:
+      transform 1s var(--ease-out),
+      opacity 0.8s var(--ease-out);
+  }
+
+  .stage__years span.is-on {
+    transform: none;
+    opacity: 1;
+  }
+
+  .stage :global(.stage__phone) {
+    --phone-w: var(--phone);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 3;
+    translate: -50% -50%;
+    filter: drop-shadow(0 40px 60px rgb(0 0 0 / 0.5));
+  }
+
+  /* Fans of store screenshots */
+  .stage__fan {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    width: var(--phone);
+    height: var(--phone-h);
+    translate: -50% -50%;
+    display: none;
+  }
+
+  .stage__fan.is-near,
+  .stage__fan.is-open {
+    display: block;
+  }
+
+  .stage__card {
+    position: absolute;
+    inset: 4% 3%;
+    z-index: var(--z);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.08),
+      0 30px 60px -20px rgb(0 0 0 / 0.7);
+    opacity: 0;
+    transform: translateX(0) scale(0.82);
+    transition:
+      transform 0.9s var(--ease-out),
+      opacity 0.5s var(--ease-out);
+    transition-delay: 0ms;
+  }
+
+  .stage__card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .stage__fan.is-open .stage__card {
+    opacity: 1;
+    transform: translateX(calc(var(--x) * var(--phone))) translateY(var(--y)) rotate(var(--r)) scale(var(--s));
+    transition-delay: calc(120ms + var(--k) * 70ms);
+  }
+
+  /* Progress dots */
+  .stage__progress {
+    position: absolute;
+    left: 50%;
+    bottom: 28px;
+    z-index: 4;
+    display: flex;
+    gap: 6px;
+    translate: -50% 0;
+  }
+
+  .stage__progress span {
+    width: 6px;
+    height: 6px;
+    border-radius: 99px;
+    background: rgb(255 255 255 / 0.18);
+    transition:
+      width 0.5s var(--ease-out),
+      background-color 0.5s;
+  }
+
+  .stage__progress span.is-on {
+    width: 22px;
+    background: var(--text);
+  }
+
+  /* ---------------- Phone screens ---------------- */
+  .scr {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .scr--home {
+    transition:
+      transform 0.8s var(--ease-out),
+      filter 0.8s var(--ease-out),
+      opacity 0.8s;
+  }
+
+  .scr--home.is-behind {
+    transform: scale(1.12);
+    filter: blur(6px);
+    opacity: 0.4;
+  }
+
+  .home__wall {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(120% 70% at 20% 0%, color-mix(in srgb, var(--glow) 55%, #0b0b10), transparent 70%),
+      radial-gradient(90% 60% at 100% 100%, color-mix(in srgb, var(--glow) 35%, #0b0b10), transparent 70%),
+      #0b0b10;
+    transition: background 1s;
+  }
+
+  .home__widget {
+    position: absolute;
+    top: 17cqw;
+    left: 7cqw;
+    right: 7cqw;
+    display: flex;
+    align-items: center;
+    gap: 4cqw;
+    padding: 4.5cqw 5.5cqw;
+    border-radius: 7cqw;
+    background: rgb(255 255 255 / 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  }
+
+  .home__widget-k {
+    display: grid;
+    place-items: center;
+    width: 13cqw;
+    height: 13cqw;
+    border-radius: 4cqw;
+    background: #f3f1ec;
+    color: #0b0b0c;
+    font-family: var(--font-mono);
+    font-size: 4.6cqw;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .home__widget-l {
+    color: rgb(255 255 255 / 0.75);
+    font-size: 3.6cqw;
+    line-height: 1.3;
+  }
+
+  .home__grid {
+    position: absolute;
+    top: 46cqw;
+    left: 5cqw;
+    right: 5cqw;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5cqw 2cqw;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home__grid li {
+    display: grid;
+    justify-items: center;
+    gap: 1.6cqw;
+    min-width: 0;
+  }
+
+  .home__grid :global(.app-icon) {
+    width: 15.5cqw !important;
+    height: 15.5cqw !important;
+  }
+
+  .home__grid span {
+    max-width: 100%;
+    overflow: hidden;
+    color: rgb(255 255 255 / 0.92);
+    font-size: 2.9cqw;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* App screens: open from the icon like iOS */
+  .scr--app {
+    --ox: 50%;
+    --oy: 50%;
+    z-index: 5;
+    background: var(--splash);
+    border-radius: 18cqw;
+    opacity: 0;
+    transform: scale(0.16);
+    transform-origin: var(--ox) var(--oy);
+    transition:
+      transform 0.75s cubic-bezier(0.2, 0.9, 0.25, 1),
+      opacity 0.35s ease,
+      border-radius 0.75s cubic-bezier(0.2, 0.9, 0.25, 1);
+    pointer-events: none;
+  }
+
+  .scr--app.is-open {
+    opacity: 1;
+    transform: none;
+    border-radius: 0;
+  }
+
+  .scr--app.is-closing {
+    z-index: 4;
+    transition:
+      transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.5s ease 0.1s,
+      border-radius 0.6s;
+  }
+
+  .splash {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 5cqw;
+    color: var(--ink);
+  }
+
+  .splash :global(.app-icon) {
+    width: 26cqw !important;
+    height: 26cqw !important;
+  }
+
+  .splash--image :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .splash__name {
+    font-size: 6cqw;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .scr__media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    opacity: 0;
+    transition: opacity 0.6s var(--ease-out);
+  }
+
+  .scr__shot :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .scr__shot.is-on {
+    opacity: 1;
+  }
+
+  /* 16:9 recordings: show the whole frame, letterboxed */
+  .scr--contain .scr__shot {
+    background: #000;
+  }
+
+  .scr--contain .scr__shot :global(img) {
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .app__rail-phone :global(.phone__screen > img.fit-contain) {
+    object-fit: contain;
+    object-position: center;
+    background: #000;
+  }
+
+  /* When a video exists it is the first "shot" of the app. */
+  .scr--app.is-video video.scr__media {
+    opacity: 1;
+  }
+
+  /* ---------------- Mobile ---------------- */
+  .app__rail {
+    display: none;
+  }
+
+  @media (max-width: 1023px) {
+    .apps__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .apps__stage {
+      display: none;
+    }
+
+    .apps__head {
+      min-height: 0;
+      padding-bottom: 24px;
+    }
+
+    .app {
+      grid-template-columns: 28px minmax(0, 1fr);
+      min-height: 0;
+      align-items: start;
+      padding-bottom: 56px;
+    }
+
+    .app__year {
+      position: static;
+      margin-top: 72px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
+    .app__year::before {
+      margin: 0 0 6px;
+    }
+
+    .app__time::before {
+      left: 4px;
+    }
+
+    .app__body {
+      opacity: 1;
+      margin-block: 40px 16px;
+      padding: 0;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    .app__rail {
+      display: flex;
+      gap: 14px;
+      margin-inline: calc(-28px - var(--gutter)) calc(var(--gutter) * -1);
+      padding: 8px var(--gutter) 16px calc(28px + var(--gutter));
+      scroll-padding-inline: calc(28px + var(--gutter)) var(--gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+
+    .app__rail::-webkit-scrollbar {
+      display: none;
+    }
+
+    .app__rail > * {
+      flex: none;
+      scroll-snap-align: start;
+    }
+
+    .app__rail-phone :global(.phone) {
+      --phone-w: 210px;
+    }
+
+    .app__rail-shot {
+      height: calc(210px * 882 / 433);
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 0 0 1px var(--line);
+    }
+
+    .app__rail-shot :global(img) {
+      height: 100%;
+      width: auto;
+    }
+
+    .app__meta {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

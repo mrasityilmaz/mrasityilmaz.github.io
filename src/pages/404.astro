@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Page not found — Raşit Yılmaz" description="This page does not exist.">
+  <Nav home={false} />
+  <main id="main" class="nf">
+    <div class="container nf__inner">
+      <p class="eyebrow">404</p>
+      <h1>This page took a <span class="serif">different route.</span></h1>
+      <p class="muted">The link may be old — the site was rebuilt in 2026.</p>
+      <div class="nf__actions">
+        <a class="btn" href="/">Back home</a>
+        <a class="btn btn--ghost" href="/#apps">See the apps</a>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .nf {
+    min-height: 80svh;
+    display: grid;
+    align-items: center;
+    padding-top: var(--header-h);
+  }
+
+  .nf__inner {
+    display: grid;
+    justify-items: start;
+    gap: 22px;
+  }
+
+  .nf h1 {
+    font-size: var(--fs-3xl);
+    max-width: 14ch;
+  }
+
+  .nf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>

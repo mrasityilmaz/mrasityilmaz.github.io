@@ -1,0 +1,268 @@
+---
+import { site, mailto } from '../data/site';
+
+interface Props {
+  /** Base path for in-page anchors; '' on the home page, '/' elsewhere. */
+  home?: boolean;
+}
+
+const { home = true } = Astro.props;
+const base = home ? '' : '/';
+
+const links = [
+  { href: `${base}#apps`, label: 'Apps' },
+  { href: `${base}#experience`, label: 'Experience' },
+  { href: `${base}#open-source`, label: 'Open source' },
+  { href: '/sepello/', label: 'Sepello' },
+];
+---
+
+<header class="nav" data-nav>
+  <div class="nav__inner">
+    <a class="nav__brand" href="/" aria-label={`${site.name} — home`}>
+      <span class="nav__mark" aria-hidden="true">RY</span>
+      <span class="nav__name">{site.shortName}</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+
+    <a class="nav__cta" href={mailto('Hello Raşit')}>
+      <span>Email me</span>
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </a>
+
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-sheet" data-nav-toggle>
+      <span class="sr-only">Menu</span>
+      <span class="nav__bar"></span>
+      <span class="nav__bar"></span>
+    </button>
+  </div>
+
+  <div class="nav__sheet" id="nav-sheet" data-nav-sheet hidden>
+    <nav aria-label="Mobile">
+      {links.map((l) => <a href={l.href} data-nav-close>{l.label}</a>)}
+      <a href={`${base}#contact`} data-nav-close>Contact</a>
+    </nav>
+    <a class="btn" href={mailto('Hello Raşit')}>{site.email}</a>
+  </div>
+</header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const sheet = document.querySelector<HTMLElement>('[data-nav-sheet]');
+
+  if (nav && toggle && sheet) {
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      nav.classList.toggle('is-scrolled', y > 24);
+      // Hide on scroll down, reveal on scroll up (never while the menu is open).
+      if (!nav.classList.contains('is-open')) {
+        nav.classList.toggle('is-hidden', y > 400 && y > lastY + 4);
+        if (y < lastY - 4) nav.classList.remove('is-hidden');
+      }
+      lastY = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    const setOpen = (open: boolean) => {
+      nav.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      sheet.hidden = !open;
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+    };
+    toggle.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+    sheet.querySelectorAll('[data-nav-close]').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+    document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+  }
+</script>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    padding: 14px var(--gutter);
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .nav.is-hidden {
+    transform: translateY(-110%);
+  }
+
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    max-width: var(--max);
+    height: 52px;
+    margin-inline: auto;
+    padding: 0 8px 0 10px;
+    border-radius: 999px;
+    transition:
+      background-color 0.4s,
+      box-shadow 0.4s,
+      backdrop-filter 0.4s;
+  }
+
+  .nav.is-scrolled .nav__inner,
+  .nav.is-open .nav__inner {
+    background: var(--glass);
+    box-shadow:
+      inset 0 0 0 1px var(--line),
+      0 10px 30px -10px rgb(0 0 0 / 0.35);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  }
+
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto;
+    font-weight: 560;
+    letter-spacing: -0.01em;
+  }
+
+  .nav__mark {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    background: var(--invert-bg);
+    color: var(--invert-text);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .nav__links {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav__links a {
+    padding: 8px 14px;
+    border-radius: 999px;
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+    transition:
+      color 0.25s,
+      background-color 0.25s;
+  }
+
+  .nav__links a:hover {
+    color: var(--text);
+    background: var(--tint-2);
+  }
+
+  .nav__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding-inline: 16px;
+    border-radius: 999px;
+    background: var(--invert-bg);
+    color: var(--invert-text);
+    font-size: var(--fs-sm);
+    font-weight: 560;
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .nav__cta:hover {
+    transform: translateY(-1px);
+  }
+
+  .nav__cta svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .nav__toggle {
+    display: none;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--tint);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .nav__bar {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    height: 1.5px;
+    border-radius: 2px;
+    background: var(--text);
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .nav__bar:first-of-type {
+    top: 16px;
+  }
+
+  .nav__bar:last-of-type {
+    top: 23px;
+  }
+
+  .nav.is-open .nav__bar:first-of-type {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+
+  .nav.is-open .nav__bar:last-of-type {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+
+  .nav__sheet {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 110px var(--gutter) 40px;
+    background: var(--sheet);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .nav__sheet[hidden] {
+    display: none;
+  }
+
+  .nav__sheet nav {
+    display: grid;
+    gap: 6px;
+  }
+
+  .nav__sheet nav a {
+    font-size: clamp(2.25rem, 9vw, 3.5rem);
+    font-weight: 560;
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+  }
+
+  .nav__sheet .btn {
+    width: 100%;
+  }
+
+  @media (max-width: 860px) {
+    .nav__links,
+    .nav__cta {
+      display: none;
+    }
+
+    .nav__toggle {
+      display: block;
+    }
+  }
+</style>
