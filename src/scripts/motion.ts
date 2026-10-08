@@ -19,7 +19,7 @@ export function getLenis() {
 /** Smooth scrolling, scroll-linked GSAP and reveal-on-scroll for the whole site. */
 export function initMotion() {
   if (!prefersReducedMotion() && !isSafari()) {
-    lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 1, anchors: { offset: -80 } });
+    lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 1, anchors: true }); // honours scroll-padding-top
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis?.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);

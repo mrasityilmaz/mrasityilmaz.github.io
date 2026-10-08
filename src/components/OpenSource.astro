@@ -6,7 +6,13 @@ import mihrIcon from '../assets/oss/mihr-icon.png';
 import storeStudioIcon from '../assets/oss/store-studio-icon.png';
 
 const [mihr, storeStudio, assetsGen, systemStatus] = oss;
-const seeds = ['#7839ee', '#0ea5e9', '#16a34a', '#f97316', '#e11d48'];
+const seeds = [
+  { name: 'Violet', hex: '#7839ee' },
+  { name: 'Sky', hex: '#0ea5e9' },
+  { name: 'Green', hex: '#16a34a' },
+  { name: 'Orange', hex: '#f97316' },
+  { name: 'Rose', hex: '#e11d48' },
+];
 const shades = [5, 12, 22, 34, 48, 62, 76, 88];
 
 const arrow = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -24,7 +30,7 @@ const arrow = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11
 
     <div class="bento">
       {/* Mihr UI — with a live seed-color demo */}
-      <article class="card card--mihr" data-reveal data-mihr style={`--seed:${seeds[0]}`}>
+      <article class="card card--mihr" data-reveal data-mihr style={`--seed:${seeds[0].hex}`}>
         <div class="card__top">
           <Image src={mihrIcon} alt="" width={56} height={56} densities={[1, 2]} class="card__icon" />
           <div>
@@ -34,17 +40,16 @@ const arrow = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11
         </div>
         <p class="card__blurb">{mihr.blurb}</p>
 
-        <div class="mihr-demo" aria-label="Try it: pick a seed color">
-          <div class="mihr-demo__seeds" role="radiogroup" aria-label="Seed color">
+        <div class="mihr-demo">
+          <div class="mihr-demo__seeds" role="group" aria-label="Try it: pick a seed color">
             {
               seeds.map((c, i) => (
                 <button
                   type="button"
-                  role="radio"
-                  aria-checked={i === 0 ? 'true' : 'false'}
-                  aria-label={`Seed ${c}`}
-                  data-seed={c}
-                  style={`--c:${c}`}
+                  aria-pressed={i === 0 ? 'true' : 'false'}
+                  aria-label={c.name}
+                  data-seed={c.hex}
+                  style={`--c:${c.hex}`}
                 />
               ))
             }
@@ -157,11 +162,11 @@ Image.asset(Assets.images.logo)</code></pre>
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-mihr]').forEach((card) => {
-    const radios = card.querySelectorAll<HTMLButtonElement>('[data-seed]');
-    radios.forEach((btn) =>
+    const buttons = card.querySelectorAll<HTMLButtonElement>('[data-seed]');
+    buttons.forEach((btn) =>
       btn.addEventListener('click', () => {
         card.style.setProperty('--seed', btn.dataset.seed!);
-        radios.forEach((r) => r.setAttribute('aria-checked', String(r === btn)));
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
       }),
     );
   });
@@ -363,7 +368,7 @@ Image.asset(Assets.images.logo)</code></pre>
     transform: scale(1.1);
   }
 
-  .mihr-demo__seeds button[aria-checked='true'] {
+  .mihr-demo__seeds button[aria-pressed='true'] {
     box-shadow:
       0 0 0 2px var(--bg),
       0 0 0 4px var(--c);
@@ -378,7 +383,7 @@ Image.asset(Assets.images.logo)</code></pre>
   }
 
   .mihr-demo__scale span {
-    background: color-mix(in oklch, var(--seed), oklch(1 0 0) calc(100% - var(--v) * 1%));
+    background: color-mix(in oklch, var(--seed), white calc(100% - var(--v) * 1%));
   }
 
   .mihr-demo__scale span:nth-child(n + 5) {

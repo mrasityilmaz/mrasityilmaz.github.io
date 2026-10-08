@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
@@ -13,6 +13,9 @@ import welcome from '../assets/apps/sepello/welcome.webp';
 import portrait from '../assets/me/portrait.webp';
 
 const sepello = appsById['sepello'];
+/* One <picture> for both themes, so only the wordmark that is shown gets downloaded. */
+const wordmarkSizes = '(max-width: 700px) 70vw, 420px';
+const inkWordmark = await getImage({ src: wordmarkInk, widths: [420, 840], format: 'webp' });
 const [home, myLists, activity, templates, profile] = sepello.phone.screens;
 
 /* Every figure on this page was checked against the repository on 2026-10-09:
@@ -59,7 +62,7 @@ const features = [
     id: 'data',
     eyebrow: 'Your data, your call',
     title: 'Take your data with you — or delete it.',
-    body: 'Export your lists, items and purchases as CSV and JSON whenever you like, and delete your account from inside the app.',
+    body: 'Link your account to export your lists, items and purchases as CSV and JSON, and delete your account from inside the app.',
     points: ['Data export', 'Account deletion'],
     screen: profile,
     alt: 'Sepello profile screen with preferences and the data export option',
@@ -73,8 +76,8 @@ const jsonLd = {
   applicationCategory: 'LifestyleApplication',
   operatingSystem: 'iOS, Android',
   description:
-    'Sepello is a shared shopping-list app for life’s big moments — a new home, a baby, a wedding, school, a hospital bag — where families plan together, track prices and spending, and ask a community what to buy.',
-  url: `${site.url}/sepello`,
+    'Sepello is a shared shopping-list app for life’s big moments — a new home, a baby, a wedding, school, a hospital bag — where families plan together, track prices and spending, and start from ready-made lists.',
+  url: `${site.url}/sepello/`,
   author: { '@type': 'Person', name: site.name, url: site.url },
 };
 ---
@@ -104,14 +107,16 @@ const jsonLd = {
             </span>
           </div>
           <h1 id="sp-title" class="sp-hero__title" data-hero-in>
-            <Image src={wordmarkCream} alt="Sepello" class="wm wm--cream" widths={[420, 840]} sizes="(max-width: 700px) 70vw, 420px" loading="eager" fetchpriority="high" />
-            <Image src={wordmarkInk} alt="" aria-hidden="true" class="wm wm--ink" widths={[420, 840]} sizes="(max-width: 700px) 70vw, 420px" loading="eager" />
+            <picture>
+              <source media="(prefers-color-scheme: light)" srcset={inkWordmark.srcSet.attribute} sizes={wordmarkSizes} />
+              <Image src={wordmarkCream} alt="Sepello" class="wm" widths={[420, 840]} sizes={wordmarkSizes} loading="eager" fetchpriority="high" />
+            </picture>
           </h1>
           <p class="sp-hero__tagline" data-hero-in>Get ready for the big moments <span class="serif">together.</span></p>
           <p class="sp-hero__sub" data-hero-in>New home, baby, school or trousseau: share your list with the people you love.</p>
           <p class="sp-hero__one" data-hero-in>
             Sepello is a shared shopping-list app for life’s big moments — a new home, a baby, a wedding, school, a hospital bag —
-            where families plan together, track prices and spending, and ask a community what to buy.
+            where families plan together, track prices and spending, and start from ready-made lists.
           </p>
           <div class="sp-hero__actions" data-hero-in>
             <a class="btn" href="#features">See how it works</a>
@@ -231,10 +236,10 @@ const jsonLd = {
         <div class="sp-claude__card">
           <div class="sp-claude__copy">
             <p class="eyebrow" data-reveal>Built with Claude</p>
-            <h2 id="claude-title" data-reveal style="--d: 80ms">One person. <span class="serif">Built end to end with Claude Code.</span></h2>
+            <h2 id="claude-title" data-reveal style="--d: 80ms">One person. <span class="serif">Built with Claude Code.</span></h2>
             <p data-reveal style="--d: 140ms">
-              Sepello is a one-person team. From design decisions to the backend — the Flutter app, the Firebase services, the
-              security rules and the tests — the whole product was developed with Claude Code as a daily pair.
+              Sepello is a one-person team, built with Claude Code as a daily pair: the Flutter app, the Firebase services, the
+              security rules and the tests. 160 of the 163 commits on main are co-authored with Claude.
             </p>
             <ul class="sp-stack" data-reveal style="--d: 200ms" aria-label="Stack">
               <li>Flutter</li>
@@ -250,8 +255,8 @@ const jsonLd = {
             {
               facts.map((f) => (
                 <div>
-                  <dd>{f.value}</dd>
                   <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
                 </div>
               ))
             }
@@ -321,20 +326,6 @@ const jsonLd = {
     }
   }
 
-  /* Wordmark swaps with the theme */
-  :global(.wm--ink) {
-    display: none;
-  }
-
-  @media (prefers-color-scheme: light) {
-    :global(.wm--ink) {
-      display: block;
-    }
-
-    :global(.wm--cream) {
-      display: none;
-    }
-  }
 
   /* ---------------- Hero ---------------- */
   .sp-hero {
@@ -764,6 +755,7 @@ const jsonLd = {
   }
 
   .sp-facts dd {
+    order: -1;
     margin: 0;
     font-size: clamp(1.9rem, 1.3rem + 2vw, 3rem);
     font-weight: 560;

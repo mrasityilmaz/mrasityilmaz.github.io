@@ -50,6 +50,8 @@ const links = [
 </header>
 
 <script>
+  import { getLenis } from '../scripts/motion';
+
   const nav = document.querySelector<HTMLElement>('[data-nav]');
   const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   const sheet = document.querySelector<HTMLElement>('[data-nav-sheet]');
@@ -61,8 +63,8 @@ const links = [
       nav.classList.toggle('is-scrolled', y > 24);
       // Hide on scroll down, reveal on scroll up (never while the menu is open).
       if (!nav.classList.contains('is-open')) {
-        nav.classList.toggle('is-hidden', y > 400 && y > lastY + 4);
-        if (y < lastY - 4) nav.classList.remove('is-hidden');
+        if (y > 400 && y > lastY + 4) nav.classList.add('is-hidden');
+        else if (y < lastY - 4 || y <= 400) nav.classList.remove('is-hidden');
       }
       lastY = y;
     };
@@ -74,6 +76,8 @@ const links = [
       toggle.setAttribute('aria-expanded', String(open));
       sheet.hidden = !open;
       document.documentElement.style.overflow = open ? 'hidden' : '';
+      if (open) getLenis()?.stop();
+      else getLenis()?.start();
     };
     toggle.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
     sheet.querySelectorAll('[data-nav-close]').forEach((a) => a.addEventListener('click', () => setOpen(false)));
@@ -92,6 +96,10 @@ const links = [
 
   .nav.is-hidden {
     transform: translateY(-110%);
+  }
+
+  .nav:focus-within {
+    transform: none;
   }
 
   .nav__inner {

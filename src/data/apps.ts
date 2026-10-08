@@ -100,7 +100,7 @@ export const apps: AppEntry[] = [
       'Shared lists with invite codes, viewer and editor roles, and live updates',
       'Ready-made lists for each moment, with a slot for every item’s link and price',
       'Budget, spending and target-date reminders',
-      'Designed and built end to end with Claude Code',
+      'Built with Claude Code as a daily pair — 160 of 163 commits co-authored with Claude',
     ],
     tech: ['Flutter', 'Firebase', 'Cloud Functions', 'Firestore', 'Claude Code'],
     status: 'building',
@@ -131,7 +131,7 @@ export const apps: AppEntry[] = [
     ],
     tech: ['Flutter', 'NestJS', 'PostgreSQL', 'React', 'SAP data import'],
     status: 'building',
-    statusLabel: 'In pilot at the store · private app',
+    statusLabel: 'Back office in pilot · staff app in testing',
     links: {},
     note: 'Screens show demo data.',
     brand: { accent: '#ef7b5f', glow: '#c2412d', splash: '#f3f2ef', splashInk: '#1d1d1f' },
@@ -311,13 +311,13 @@ export const apps: AppEntry[] = [
     summary:
       'A pet-supplies store for Azerbaijan: browse by category, open a product, keep favorites and order to your door. One of the client apps I built UIs for at Regant+.',
     highlights: [
-      'Production UI built from the design files: catalog, product detail, favorites, cart and account',
+      'Production UIs built from the design files, with REST integration',
       'Also shipped UIs for Inflero’s business software and DoggyHush',
-      'REST API integration across devices and screen sizes',
     ],
     tech: ['Flutter', 'REST', 'Figma to Flutter'],
     status: 'live',
     statusLabel: 'On the App Store since 2025',
+    note: 'Screens: the App Store release from May 2025, after my time on the project.',
     links: {
       appStore: 'https://apps.apple.com/app/dostoom/id6745411708',
       googlePlay: 'https://play.google.com/store/apps/details?id=com.zhareef.fictiondevelopers',
@@ -341,7 +341,7 @@ export const apps: AppEntry[] = [
     highlights: [
       '500+ commits in nine months — the most of anyone on the codebase',
       'Activity creation and discovery with maps, social feed, profiles and real-time messaging',
-      'Moved features onto a layered architecture (data · domain · presentation) with unit and widget tests',
+      'Moved features onto a layered architecture (data · domain · presentation), with tests for the repository layer',
       'Regular TestFlight and store releases',
     ],
     tech: ['Flutter', 'Clean Architecture', 'Socket.IO', 'Firebase', 'Google Maps', 'RevenueCat'],
@@ -469,7 +469,7 @@ export const apps: AppEntry[] = [
     company: 'Squamobi',
     role: 'Flutter developer (team)',
     summary:
-      'Two apps in one: daily hadith cards and a Qibla compass, one tap apart. Share any hadith as a story or post over hundreds of backgrounds, and get a reminder at the time you choose.',
+      'Two apps in one: daily hadith cards and a Qibla compass, one tap apart. Share any hadith as a story or post over nearly 90 backgrounds, and get a reminder at the time you choose.',
     highlights: [
       'Share flow: export a hadith as a story or post with custom backgrounds',
       'Reminders, rating and feedback dialogs, paywall and ads',

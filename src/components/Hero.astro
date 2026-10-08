@@ -23,7 +23,7 @@ const orbit = apps.filter((a) => a.heroOrbit).slice(0, 7);
       </p>
 
       <h1 id="hero-title" class="hero__title">
-        <span class="hero__line"><span data-hero-line>From first pixel</span></span>
+        <span class="hero__line"><span data-hero-line>From first pixel</span></span>{' '}
         <span class="hero__line"><span data-hero-line>to the <em class="serif">App Store.</em></span></span>
       </h1>
 
@@ -75,7 +75,8 @@ const orbit = apps.filter((a) => a.heroOrbit).slice(0, 7);
 
   <div class="hero__clients" data-hero-in>
     <p class="eyebrow hero__clients-label">Built for</p>
-    <div class="hero__marquee" aria-label={`Companies I have built apps for: ${clients.join(', ')}`}>
+    <p class="sr-only">{clients.join(', ')}</p>
+    <div class="hero__marquee">
       <div class="hero__marquee-track" aria-hidden="true">
         {[0, 1].map(() => clients.map((c) => <span>{c}</span>))}
       </div>

@@ -30,7 +30,7 @@ const withShots = apps.filter((a) => galleryOf(a).length > 0);
   ))
 }
 
-<dialog class="lb" data-lightbox aria-labelledby="lb-title">
+<dialog class="lb" data-lightbox data-lenis-prevent aria-labelledby="lb-title">
   <div class="lb__bar">
     <p id="lb-title" class="lb__title" data-lb-title></p>
     <div class="lb__ctrl">
@@ -217,6 +217,11 @@ const withShots = apps.filter((a) => galleryOf(a).length > 0);
     overscroll-behavior: contain;
     scrollbar-width: thin;
     outline: none;
+  }
+
+  .lb__track:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
   }
 
   .lb[data-mode='video'] .lb__track {
