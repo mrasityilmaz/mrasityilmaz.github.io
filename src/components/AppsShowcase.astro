@@ -515,15 +515,16 @@ const storeLink = (app: AppEntry) => app.links.appStore ?? app.links.googlePlay;
     box-shadow:
       inset 0 0 0 1px rgb(255 255 255 / 0.07),
       0 30px 80px -40px rgb(0 0 0 / 0.8);
-    backdrop-filter: blur(18px) saturate(1.4);
-    -webkit-backdrop-filter: blur(18px) saturate(1.4);
     opacity: 0.4;
     transition:
       opacity 0.6s var(--ease-out),
       box-shadow 0.6s;
   }
 
+  /* Real frosted glass only on the active panel — it is the one the cards slide under. */
   .app.is-active .app__body {
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
     box-shadow:
       inset 0 0 0 1px rgb(255 255 255 / 0.1),
       0 30px 80px -40px rgb(0 0 0 / 0.8);
@@ -723,7 +724,6 @@ const storeLink = (app: AppEntry) => app.links.appStore ?? app.links.googlePlay;
     aspect-ratio: 1;
     border-radius: 50%;
     background: radial-gradient(closest-side, color-mix(in srgb, var(--glow) 42%, transparent), transparent 72%);
-    filter: blur(10px);
     opacity: 0.9;
     transform: translate(-50%, -50%);
   }
@@ -764,7 +764,7 @@ const storeLink = (app: AppEntry) => app.links.appStore ?? app.links.googlePlay;
     top: 50%;
     z-index: 3;
     translate: -50% -50%;
-    filter: drop-shadow(0 40px 60px rgb(0 0 0 / 0.5));
+
   }
 
   /* Fans of store screenshots */
@@ -851,14 +851,12 @@ const storeLink = (app: AppEntry) => app.links.appStore ?? app.links.googlePlay;
   .scr--home {
     transition:
       transform 0.8s var(--ease-out),
-      filter 0.8s var(--ease-out),
       opacity 0.8s;
   }
 
   .scr--home.is-behind {
     transform: scale(1.12);
-    filter: blur(6px);
-    opacity: 0.4;
+    opacity: 0.35;
   }
 
   .home__wall {

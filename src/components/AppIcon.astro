@@ -42,7 +42,8 @@ const { app, size = 64, class: className, eager = false } = Astro.props;
     flex: none;
     width: var(--size);
     height: var(--size);
-    filter: drop-shadow(0 calc(var(--size) * 0.08) calc(var(--size) * 0.16) rgb(0 0 0 / 0.45));
+    border-radius: 23%;
+    box-shadow: 0 calc(var(--size) * 0.08) calc(var(--size) * 0.18) calc(var(--size) * -0.04) rgb(0 0 0 / 0.5);
   }
 
   .app-icon__shape {

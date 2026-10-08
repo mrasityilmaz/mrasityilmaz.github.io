@@ -160,8 +160,8 @@ const orbit = apps.filter((a) => a.heroOrbit).slice(0, 7);
     background:
       radial-gradient(closest-side at 40% 45%, rgb(124 108 242 / 0.32), transparent 70%),
       radial-gradient(closest-side at 70% 65%, rgb(245 177 76 / 0.12), transparent 70%);
-    filter: blur(20px);
     animation: aurora 18s ease-in-out infinite alternate;
+    will-change: transform;
   }
 
   @keyframes aurora {

@@ -7,6 +7,9 @@ gsap.registerPlugin(ScrollTrigger);
 export const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/** Safari (macOS + iOS) already has smooth momentum scrolling; Lenis on top of it feels laggy there. */
+const isSafari = () => /^((?!chrome|chromium|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+
 let lenis: Lenis | null = null;
 
 export function getLenis() {
@@ -15,7 +18,7 @@ export function getLenis() {
 
 /** Smooth scrolling, scroll-linked GSAP and reveal-on-scroll for the whole site. */
 export function initMotion() {
-  if (!prefersReducedMotion()) {
+  if (!prefersReducedMotion() && !isSafari()) {
     lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 1, anchors: { offset: -80 } });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis?.raf(time * 1000));

@@ -61,6 +61,7 @@ const withShots = apps.filter((a) => galleryOf(a).length > 0);
       build();
       title.textContent = label;
       getLenis()?.stop();
+      document.documentElement.classList.add('lb-open');
       dialog.showModal();
       requestAnimationFrame(() => {
         const target = track.children[startIndex] as HTMLElement | undefined;
@@ -74,6 +75,7 @@ const withShots = apps.filter((a) => galleryOf(a).length > 0);
     dialog.addEventListener('close', () => {
       track.querySelectorAll('video').forEach((v) => v.pause());
       track.replaceChildren();
+      document.documentElement.classList.remove('lb-open');
       getLenis()?.start();
     });
 
@@ -125,6 +127,10 @@ const withShots = apps.filter((a) => galleryOf(a).length > 0);
 </script>
 
 <style>
+  :global(html.lb-open) {
+    overflow: hidden;
+  }
+
   .lb {
     width: 100vw;
     max-width: 100vw;
